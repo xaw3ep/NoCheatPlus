@@ -1208,6 +1208,7 @@ public class BlockProperties {
                 BridgeMaterial.END_PORTAL_FRAME,
                 // XZ-bounds issues.
                 BridgeMaterial.CAKE,
+		BridgeMaterial.get("ANVIL"),
                 // Already worked around with isPassableWorkaround (kept for dev-reference).
                 //				Material.ANVIL,
                 //				Material.SKULL, Material.FLOWER_POT,
