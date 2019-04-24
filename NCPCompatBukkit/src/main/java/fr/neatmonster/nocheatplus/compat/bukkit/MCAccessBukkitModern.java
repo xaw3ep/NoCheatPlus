@@ -176,7 +176,10 @@ public class MCAccessBukkitModern extends MCAccessBukkit {
                 Material.BEACON,
                 Material.LADDER,
                 Material.VINE,
-                Material.ANVIL
+                Material.ANVIL,
+                Material.CHIPPED_ANVIL,
+                Material.DAMAGED_ANVIL,
+                Material.CHORUS_FLOWER
         }) {
             processedBlocks.add(mat);
         }
