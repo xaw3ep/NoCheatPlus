@@ -35,6 +35,7 @@ import fr.neatmonster.nocheatplus.compat.bukkit.model.BukkitSlab;
 import fr.neatmonster.nocheatplus.compat.bukkit.model.BukkitStairs;
 import fr.neatmonster.nocheatplus.compat.bukkit.model.BukkitStatic;
 import fr.neatmonster.nocheatplus.compat.bukkit.model.BukkitTrapDoor;
+import fr.neatmonster.nocheatplus.compat.bukkit.model.BukkitTurtleEgg;
 import fr.neatmonster.nocheatplus.config.WorldConfigProvider;
 import fr.neatmonster.nocheatplus.utilities.map.BlockCache;
 import fr.neatmonster.nocheatplus.utilities.map.BlockFlags;
@@ -57,6 +58,7 @@ public class MCAccessBukkitModern extends MCAccessBukkit {
     private static final BukkitShapeModel MODEL_END_PORTAL_FRAME = new BukkitEndPortalFrame();
     private static final BukkitShapeModel MODEL_SEA_PICKLE = new BukkitSeaPickle();
     private static final BukkitShapeModel MODEL_COCOA = new BukkitCocoa();
+    private static final BukkitShapeModel MODEL_TURTLE_EGG = new BukkitTurtleEgg();
 
     // Blocks that have a different shape, based on how they have been placed.
     private static final BukkitShapeModel MODEL_SLAB = new BukkitSlab();
@@ -146,17 +148,22 @@ public class MCAccessBukkitModern extends MCAccessBukkit {
 
         // TODO: Also consider removing flags (passable_x4 etc).
 
-        // Adjust flags for individual blocks.
+    	// Variables for repeated flags (Temporary flags, these should be fixed later so that they are not added here)
+    	final long headFlags = BlockFlags.SOLID_GROUND | BlockProperties.F_XZ100 | BlockProperties.F_IGN_PASSABLE;
+    	final long blockFix = BlockFlags.SOLID_GROUND | BlockProperties.F_XZ100 | BlockProperties.F_IGN_PASSABLE;
+    	// Adjust flags for individual blocks.
         BlockProperties.setBlockFlags(Material.CAULDRON, 
                 BlockFlags.SOLID_GROUND | BlockProperties.F_GROUND_HEIGHT 
                 | BlockProperties.F_MIN_HEIGHT4_1);
-        BlockProperties.setBlockFlags(Material.COCOA, BlockFlags.SOLID_GROUND | BlockProperties.F_XZ100 | BlockProperties.F_IGN_PASSABLE);
-        BlockProperties.setBlockFlags(Material.CHORUS_PLANT, BlockFlags.SOLID_GROUND | BlockProperties.F_XZ100 | BlockProperties.F_IGN_PASSABLE);
-        // For some odd reason, adding the flags to MaterialUtil.HEADS_WALL does not apply the flag. Adding the flags one by one here solves the issue.
-        BlockProperties.setBlockFlags(Material.CREEPER_WALL_HEAD, BlockFlags.SOLID_GROUND | BlockProperties.F_XZ100 | BlockProperties.F_IGN_PASSABLE);
-        BlockProperties.setBlockFlags(Material.ZOMBIE_WALL_HEAD, BlockFlags.SOLID_GROUND | BlockProperties.F_XZ100 | BlockProperties.F_IGN_PASSABLE);
-        BlockProperties.setBlockFlags(Material.PLAYER_WALL_HEAD, BlockFlags.SOLID_GROUND | BlockProperties.F_XZ100 | BlockProperties.F_IGN_PASSABLE);
-        BlockProperties.setBlockFlags(Material.DRAGON_WALL_HEAD, BlockFlags.SOLID_GROUND | BlockProperties.F_XZ100 | BlockProperties.F_IGN_PASSABLE);
+        BlockProperties.setBlockFlags(Material.COCOA, blockFix);
+        BlockProperties.setBlockFlags(Material.TURTLE_EGG, BlockProperties.F_IGN_PASSABLE | BlockFlags.SOLID_GROUND | BlockProperties.F_GROUND | BlockProperties.F_XZ100);
+        BlockProperties.setBlockFlags(Material.CHORUS_PLANT, blockFix);
+        BlockProperties.setBlockFlags(Material.CREEPER_WALL_HEAD, headFlags);
+        BlockProperties.setBlockFlags(Material.ZOMBIE_WALL_HEAD, headFlags);
+        BlockProperties.setBlockFlags(Material.PLAYER_WALL_HEAD, headFlags);
+        BlockProperties.setBlockFlags(Material.DRAGON_WALL_HEAD, headFlags);
+        BlockProperties.setBlockFlags(Material.WITHER_SKELETON_WALL_SKULL, headFlags);
+        BlockProperties.setBlockFlags(Material.SKELETON_WALL_SKULL, headFlags);
 
         // Directly keep blocks as is.
         for (final Material mat : new Material[] {
@@ -255,6 +262,13 @@ public class MCAccessBukkitModern extends MCAccessBukkit {
         // Flower pots.
         for (Material mat : MaterialUtil.FLOWER_POTS) {
             addModel(mat, MODEL_FLOWER_POT);
+        }
+        
+        // Turtle Eggs.
+        for (Material mat : new Material[] {
+        		Material.TURTLE_EGG
+        }) {
+        	addModel(mat, MODEL_TURTLE_EGG);
         }
         
         // Conduit
