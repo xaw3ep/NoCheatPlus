@@ -1927,7 +1927,7 @@ public class MovingListener extends CheckListener implements TickListener, IRemo
             // Adjust fall distance, if set so.
             // TODO: How to account for plugins that reset the fall distance here?
             // TODO: Detect transition from valid flying that needs resetting the fall distance.
-            if (event.getCause() == TeleportCause.UNKNOWN) {
+            if (event.getCause() == TeleportCause.UNKNOWN || event.getCause() == TeleportCause.COMMAND) {
                 // Always keep fall damage.
                 player.setFallDistance((float) fallDistance);
                 data.noFallFallDistance = (float) fallDistance;

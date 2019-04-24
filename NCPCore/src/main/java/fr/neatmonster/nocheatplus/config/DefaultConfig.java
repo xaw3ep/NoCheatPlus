@@ -623,7 +623,7 @@ public class DefaultConfig extends ConfigFile {
         final String start = "[player] failed [check]: ";
         final String end = ". VL [violations].";
         final String tell = "ncp tell [player] ";
-        set(ConfPaths.STRINGS + ".angle", start + "tried to hit multiple entities at the same time" + end, 785);
+        set(ConfPaths.STRINGS + ".angle", start + "tried to hit multiple entities at the same time (Tags [tags])" + end, 785);
         set(ConfPaths.STRINGS + ".attackfrequency", start + "attacks with too high a frequency ([packets]/[limit], [tags])" + end, 785);
         set(ConfPaths.STRINGS + ".ban", "ban [player]", 785);
         set(ConfPaths.STRINGS + ".ban-ip", "ban-ip [ip]", 785);
@@ -638,6 +638,7 @@ public class DefaultConfig extends ConfigFile {
         set(ConfPaths.STRINGS + ".bwrong", start + "broke another block than clicked" + end, 785);
         set(ConfPaths.STRINGS + ".captcha", "[player] failed captcha repeatedly" + end, 785);
         set(ConfPaths.STRINGS + ".chatnormal", start + "potentially annoying chat" + end, 785);
+        set(ConfPaths.STRINGS + ".clickpat", start + " seems to be clicking with bot-like frequencies" + end, 785);
         set(ConfPaths.STRINGS + ".color", start + "sent colored chat message" + end, 785);
         set(ConfPaths.STRINGS + ".commands", start + "issued too many commands" + end, 785);
         set(ConfPaths.STRINGS + ".critical", start + "tried to do a critical hit but wasn't technically jumping [tags]" + end, 785);
@@ -663,7 +664,7 @@ public class DefaultConfig extends ConfigFile {
         set(ConfPaths.STRINGS + ".improbable", start + "meets the improbable more than expected" + end, 785);
         set(ConfPaths.STRINGS + ".instantbow", start + "fires bow too fast" + end, 785);
         set(ConfPaths.STRINGS + ".instanteat", start + "eats food [food] too fast" + end, 785);
-        set(ConfPaths.STRINGS + ".inventorymove", start + "interacted with inventory while it was not possible" + end, 1153);
+        set(ConfPaths.STRINGS + ".inventorymove", start + "interacted with inventory while it was not possible (tags [tags])" + end, 1153);
         set(ConfPaths.STRINGS + ".keepalive", start + "spams keep-alive packets (god/freecam?)" + end, 785);
         set(ConfPaths.STRINGS + ".kick", "kick [player]", 785);
         set(ConfPaths.STRINGS + ".kickalive", "ncp kick [player] Too many keep-alive packets.", 785);
