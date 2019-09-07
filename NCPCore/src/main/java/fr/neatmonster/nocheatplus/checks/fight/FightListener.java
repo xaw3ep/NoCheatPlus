@@ -19,7 +19,6 @@ import java.util.Iterator;
 import org.bukkit.Location;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.Parrot;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.TNTPrimed;
 import org.bukkit.event.EventHandler;
@@ -33,6 +32,7 @@ import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
 import org.bukkit.event.player.PlayerAnimationEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.ItemStack;
 
 import fr.neatmonster.nocheatplus.NCPAPIProvider;
@@ -105,6 +105,8 @@ public class FightListener extends CheckListener implements JoinLeaveListener{
 
     /** The no swing check. */
     private final NoSwing     noSwing     = addCheck(new NoSwing());
+	
+    private final PitchPattern pitchPattern = addCheck(new PitchPattern());
     
     private final FightSync    FightSync  = addCheck(new FightSync());
 
@@ -901,7 +903,7 @@ public class FightListener extends CheckListener implements JoinLeaveListener{
     	final Player player = e.getPlayer();
     	final FightData data = DataManager.getGenericInstance(player, FightData.class);
     	
-    	if (entity instanceof Parrot) {
+    	if (entity.getType().getEntityClass().getCanonicalName().endsWith("Parrot")) {
 	data.exemptArmSwing = true;
     	} else {
 	data.exemptArmSwing = false;
@@ -916,6 +918,7 @@ public class FightListener extends CheckListener implements JoinLeaveListener{
     public void playerLeaves(final Player player) {
         final FightData data = DataManager.getGenericInstance(player, FightData.class);
         data.angleHits.clear();
+	data.loginExempt = true;
     }
 
     @EventHandler(ignoreCancelled = false, priority = EventPriority.MONITOR)
@@ -950,6 +953,17 @@ public class FightListener extends CheckListener implements JoinLeaveListener{
     }
 		
 		
+	}
+	
+	@EventHandler(priority = EventPriority.MONITOR)
+	public void pitchPattern(PlayerMoveEvent e) {
+		Player player = e.getPlayer();
+		final IPlayerData pData = DataManager.getPlayerData(player);
+		final FightConfig cc = pData.getGenericInstance(FightConfig.class);
+		final FightData data = DataManager.getGenericInstance(player, FightData.class);
+		float deltaPitch = e.getTo().getPitch() - e.getFrom().getPitch();
+		
+		pitchPattern.check(player, deltaPitch, cc, pData, data);
 	}
 
 }

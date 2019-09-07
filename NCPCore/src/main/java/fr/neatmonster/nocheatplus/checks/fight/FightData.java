@@ -14,8 +14,12 @@
  */
 package fr.neatmonster.nocheatplus.checks.fight;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.UUID;
 
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -44,6 +48,10 @@ public class FightData extends ACheckData implements IDataOnRemoveSubCheckData, 
     public double                  reachVL;
     public double                  speedVL;
     public double                  wrongTurnVL;
+    public double                  pitchPatternVL;
+    
+    HashMap<UUID, Float> lastDeltaPitchGCDs = new HashMap<UUID, Float>();
+    HashMap<UUID, List<Float>> deltaPitches = new HashMap<UUID, List<Float>>();
 
     // Shared
     public String lastWorld			= "";
@@ -55,6 +63,7 @@ public class FightData extends ACheckData implements IDataOnRemoveSubCheckData, 
     /** Attack penalty (close combat, ENTITY_ATTACK). */
     public final PenaltyTime attackPenalty = new PenaltyTime();
     public final PenaltyTime clicPatPenalty = new PenaltyTime();
+    public boolean loginExempt;
 
     /** The entity id  which might get counter-attacked. */
     public int thornsId = Integer.MIN_VALUE;
@@ -170,6 +179,8 @@ public class FightData extends ACheckData implements IDataOnRemoveSubCheckData, 
                     noSwingVL = 0;
                     // Not reset time, for leniency rather.
                     break;
+                case FIGHT_PITCHPATTERN:
+                	pitchPatternVL = 0;
                 case FIGHT_SELFHIT:
                     selfHitVL.clear(System.currentTimeMillis());
                     break;

@@ -370,6 +370,13 @@ public class DefaultConfig extends ConfigFile {
 
         set(ConfPaths.FIGHT_NOSWING_CHECK, "default", 785);
         set(ConfPaths.FIGHT_NOSWING_ACTIONS, "cancel vl>10 log:noswing:0:5:if cancel", 785);
+        
+        set(ConfPaths.FIGHT_PITCHPATTERN_CHECK, "default", 1153);
+        set(ConfPaths.FIGHT_PITCHPATTERN_LIMIT, 20, 1153);
+        set(ConfPaths.FIGHT_PITCHPATTERN_SAMPLE, 10F, 1153);
+        set(ConfPaths.FIGHT_PITCHPATTERN_DIFF, 0.001D, 1153);
+        set(ConfPaths.FIGHT_PITCHPATTERN_DELTAGCD, 0.00001F, 1153);
+        set(ConfPaths.FIGHT_PITCHPATTERN_ACTIONS, "vl>2 log:pitchpattern:0:4:if", 1153);
 
         set(ConfPaths.FIGHT_REACH_CHECK, "default", 785);
         set(ConfPaths.FIGHT_REACH_SURVIVALDISTANCE, 4.4, 785);
@@ -691,6 +698,7 @@ public class DefaultConfig extends ConfigFile {
         set(ConfPaths.STRINGS + ".msgtempdenylogin", "You are temporarily denied to join this server.", 785);
         set(ConfPaths.STRINGS + ".munchhausen", start + "almost made it off the pit" + end, 785);
         set(ConfPaths.STRINGS + ".nofall", start + "tried to alter fall damage ([tags])" + end, 1057);
+        set(ConfPaths.STRINGS + ".pitchpattern", start + "inconsistent pitch patterns" + end, 1153);
         set(ConfPaths.STRINGS + ".chatfast", start + "acted like spamming (IP: [ip])" + end, 785);
         set(ConfPaths.STRINGS + ".noswing", start + "didn't swing arm" + end, 785);
         set(ConfPaths.STRINGS + ".passable", start + "moved into a block ([blocktype]) from [locationfrom] to [locationto] distance [distance] " + end, 785);

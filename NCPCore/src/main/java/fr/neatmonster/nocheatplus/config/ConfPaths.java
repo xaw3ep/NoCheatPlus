@@ -490,6 +490,7 @@ public abstract class ConfPaths {
     public static final String  FIGHT_CLICKPATTERN_PENALTY               = FIGHT_CLICKPATTERN + "penalty";
     public static final String  FIGHT_CLICKPATTERN_ACTIONS               = FIGHT_CLICKPATTERN + "actions";
     
+
     private static final String FIGHT_CRITICAL                           = FIGHT + "critical.";
     public static final String  FIGHT_CRITICAL_CHECK                     = FIGHT_CRITICAL + SUB_ACTIVE;
     // TODO: Deprecate or rename (->falldistancemin)?
@@ -517,7 +518,15 @@ public abstract class ConfPaths {
     private static final String FIGHT_NOSWING                            = FIGHT + "noswing.";
     public static final String  FIGHT_NOSWING_CHECK                      = FIGHT_NOSWING + SUB_ACTIVE;
     public static final String  FIGHT_NOSWING_ACTIONS                    = FIGHT_NOSWING + "actions";
-
+    
+    private static final String FIGHT_PITCHPATTERN                       = FIGHT + "pitchpattern.";
+    public static final String  FIGHT_PITCHPATTERN_CHECK                 = FIGHT_PITCHPATTERN + SUB_ACTIVE;
+    public static final String  FIGHT_PITCHPATTERN_LIMIT                 = FIGHT_PITCHPATTERN + "limit";
+    public static final String  FIGHT_PITCHPATTERN_SAMPLE                = FIGHT_PITCHPATTERN + "sample";
+    public static final String  FIGHT_PITCHPATTERN_DIFF                  = FIGHT_PITCHPATTERN + "gcdDiff";
+    public static final String  FIGHT_PITCHPATTERN_DELTAGCD              = FIGHT_PITCHPATTERN + "deltaGCD";
+    public static final String  FIGHT_PITCHPATTERN_ACTIONS               = FIGHT_PITCHPATTERN + "actions";
+ 
     private static final String FIGHT_REACH                              = FIGHT + "reach.";
     public static final String  FIGHT_REACH_CHECK                        = FIGHT_REACH + SUB_ACTIVE;
     public static final String  FIGHT_REACH_SURVIVALDISTANCE             = FIGHT_REACH + "survivaldistance";
@@ -571,7 +580,7 @@ public abstract class ConfPaths {
 
     private static final String INVENTORY_FASTCLICK                      = INVENTORY + "fastclick.";
     public static final String  INVENTORY_FASTCLICK_CHECK                = INVENTORY_FASTCLICK + SUB_ACTIVE;
-    public static final String  INVENTORY_FASTCLICK_EXCLUDE              = INVENTORY_FASTCLICK + "exclude";
+    public static final String INVENTORY_FASTCLICK_EXCLUDE               = INVENTORY_FASTCLICK + "exclude";
     public static final String  INVENTORY_FASTCLICK_SPARECREATIVE        = INVENTORY_FASTCLICK + "sparecreative";
     public static final String  INVENTORY_FASTCLICK_TWEAKS1_5            = INVENTORY_FASTCLICK + "tweaks1_5";
     private static final String INVENTORY_FASTCLICK_LIMIT                = INVENTORY_FASTCLICK + "limit.";
