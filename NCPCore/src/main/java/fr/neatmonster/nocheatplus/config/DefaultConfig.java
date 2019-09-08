@@ -372,8 +372,8 @@ public class DefaultConfig extends ConfigFile {
         set(ConfPaths.FIGHT_NOSWING_ACTIONS, "cancel vl>10 log:noswing:0:5:if cancel", 785);
         
         set(ConfPaths.FIGHT_PITCHPATTERN_CHECK, "default", 1153);
-        set(ConfPaths.FIGHT_PITCHPATTERN_LIMIT, 20, 1153);
-        set(ConfPaths.FIGHT_PITCHPATTERN_SAMPLE, 10F, 1153);
+        set(ConfPaths.FIGHT_PITCHPATTERN_LIMIT, 10F, 1153);
+        set(ConfPaths.FIGHT_PITCHPATTERN_SAMPLE, 20, 1153);
         set(ConfPaths.FIGHT_PITCHPATTERN_DIFF, 0.001D, 1153);
         set(ConfPaths.FIGHT_PITCHPATTERN_DELTAGCD, 0.00001F, 1153);
         set(ConfPaths.FIGHT_PITCHPATTERN_ACTIONS, "vl>2 log:pitchpattern:0:4:if", 1153);
