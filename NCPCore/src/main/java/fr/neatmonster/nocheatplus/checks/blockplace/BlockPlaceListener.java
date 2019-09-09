@@ -50,6 +50,7 @@ import fr.neatmonster.nocheatplus.checks.net.FlyingQueueHandle;
 import fr.neatmonster.nocheatplus.checks.net.model.DataPacketFlying;
 import fr.neatmonster.nocheatplus.compat.Bridge1_9;
 import fr.neatmonster.nocheatplus.compat.BridgeMisc;
+import fr.neatmonster.nocheatplus.compat.versions.ServerVersion;
 import fr.neatmonster.nocheatplus.components.NoCheatPlusAPI;
 import fr.neatmonster.nocheatplus.components.data.ICheckData;
 import fr.neatmonster.nocheatplus.components.data.IData;
@@ -212,16 +213,18 @@ public class BlockPlaceListener extends CheckListener {
                 }
                 shouldSkipSome = false;
             }
+        } else if (placedMat.toString().equals("SCAFFOLDING")) {
+        	shouldSkipSome = true;
         }
         else {
             shouldSkipSome = false;
         }
 
-        if (placedMat == Material.SIGN) {
+        if (placedMat.toString().endsWith("SIGN")) {
             // Might move to MONITOR priority.
             data.autoSignPlacedTime = System.currentTimeMillis();
             // Always hash as sign post for improved compatibility with Lockette etc.
-            data.autoSignPlacedHash = getBlockPlaceHash(block, Material.SIGN);
+            data.autoSignPlacedHash = getBlockPlaceHash(block, placedMat);
         }
 
         // Don't run checks, if a set back is scheduled.
@@ -410,6 +413,7 @@ public class BlockPlaceListener extends CheckListener {
 	*/
 	@EventHandler(priority = EventPriority.MONITOR)
     public void placeBlock(PlayerInteractEvent event) {
+		if (ServerVersion.compareMinecraftVersion("1.8") < 0) return;
     	if (!Scaffold.isEnabled(event.getPlayer())) return;
     	
     	Player player = event.getPlayer();

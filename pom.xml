@@ -44,10 +44,14 @@
 		</repository>
 		<!-- <repository> <id>md_5-releases</id> <url>http://repo.md-5.net/content/repositories/releases/</url> 
 			</repository> <repository> <id>md_5-snapshots</id> <url>http://repo.md-5.net/content/repositories/snapshots/</url> 
-			</repository> -->
+			</repository>
 		<repository>
 			<id>bukkit</id>
 			<url>http://repo.bukkit.org/content/groups/public/</url>
+		</repository> -->
+		<repository>
+    			<id>nms-repo</id>
+    			<url>https://repo.codemc.org/repository/nms/</url>
 		</repository>
 	</repositories>
 

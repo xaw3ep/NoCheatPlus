@@ -88,7 +88,7 @@ public class MapUtil {
             for (int cz = minZ; cz <= maxZ; cz ++) {
                 if (!world.isChunkLoaded(cx, cz)) {
                     try {
-                        world.loadChunk(cx, cz);
+                        world.getChunkAt(cx, cz);
                         loaded ++;
                     } catch (Exception ex) {
                         // (Can't seem to catch more precisely: TileEntity with CB 1.7.10)

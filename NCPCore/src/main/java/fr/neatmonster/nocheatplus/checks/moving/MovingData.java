@@ -98,6 +98,9 @@ public class MovingData extends ACheckData implements IDataOnRemoveSubCheckData,
     public long           timeSprinting = 0;
     public long           bedLeaveTime = 0;
     public long           timeRiptiding = 0;
+    public int			      RiptideLevel = 0;
+    public long			      timeVehicletoss = 0;
+  
     public double         multSprinting = 1.30000002; // Multiplier at the last time sprinting.
     /** Compatibility entry for bouncing of slime blocks and the like. */
     public SimpleEntry verticalBounce = null;
@@ -109,6 +112,11 @@ public class MovingData extends ACheckData implements IDataOnRemoveSubCheckData,
     public int speedTick = 0;
     public float walkSpeed = 0.0f;
     public float flySpeed = 0.0f;
+	
+	/** No Slow*/
+	 public boolean isusingitem = false;
+    public long time_rl_item = 0;
+    public boolean isHackingRI = false;
 
     /** Count set back (re-) setting. */
     private int playerMoveCount = 0;
@@ -277,6 +285,7 @@ public class MovingData extends ACheckData implements IDataOnRemoveSubCheckData,
      * properly. Workaround for VehicleLeaveEvent missing.
      */
     public boolean wasInVehicle = false; // Workaround
+    public boolean waspreInVehicle = false;
     /**
      * Set to indicate that events happen during a vehicle set back. Allows
      * skipping some resetting.

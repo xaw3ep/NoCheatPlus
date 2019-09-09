@@ -219,6 +219,7 @@ public class VehicleChecks extends CheckListener {
             debug(player, "onPlayerMoveVehicle: vehicle: " + vehicle);
         }
         data.wasInVehicle = true;
+        data.waspreInVehicle = true;
         data.sfHoverTicks = -1;
         data.removeAllVelocity();
         data.sfLowJump = false;
@@ -727,6 +728,9 @@ public class VehicleChecks extends CheckListener {
         if (debug) {
             debug(player, "Vehicle enter: first vehicle: " + vehicle.getClass().getName());
         }
+        
+        data.waspreInVehicle = true;
+        
         // Check for nested vehicles.
         final Entity lastVehicle = passengerUtil.getLastNonPlayerVehicle(vehicle, true);
         if (lastVehicle == null) {

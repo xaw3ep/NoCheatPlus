@@ -365,7 +365,7 @@ public class MaterialUtil {
     public static final Set<Material> WATER = Collections.unmodifiableSet(
             BridgeMaterial.getAllBlocks("water", "stationary_water"));
      public static final Set<Material> NEWLIQ = Collections.unmodifiableSet(
-            BridgeMaterial.getAllBlocks("TALL_SEAGRASS", "KELP_PLANT", "SEAGRASS"));
+            BridgeMaterial.getAllBlocks("TALL_SEAGRASS", "KELP_PLANT", "SEAGRASS", "KELP"));
 
     /** Wood types (1.13 rather). */
     public static final Set<Material> WOOD_BLOCKS = Collections.unmodifiableSet(addBlocks(

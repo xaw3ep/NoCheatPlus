@@ -14,12 +14,9 @@
  */
 package fr.neatmonster.nocheatplus.compat.bukkit.model;
 
-import java.util.Set;
-
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.block.BlockState;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.MultipleFacing;
 
@@ -32,16 +29,37 @@ public class BukkitChorusPlant implements BukkitShapeModel {
             final World world, final int x, final int y, final int z) {
 
         final Block block = world.getBlockAt(x, y, z);
+        final BlockData blockData = block.getBlockData();
+        double[] res = new double[] {0.187, 0.188, 0.187, 1.0 - 0.187, 0.8125, 1.0 - 0.187};
+        if (blockData instanceof MultipleFacing) {
+        	final MultipleFacing chorusplant = (MultipleFacing) blockData;
+        	for (final BlockFace face : chorusplant.getFaces()) {
+        		switch (face) {
+        		//case DOWN:
+        		//	res[1]=0.0;
+        		//	break;
+        		case UP:
+        			res[4]=1.0;
+        			break;
+        		case SOUTH:
+        			res[5]=1.0;
+        			break;
+        		case NORTH:
+        			res[2]=0.0;
+        			break;
+        		case WEST:
+        			res[0]=0.0;
+        			break;
+        		case EAST:
+        			res[3]=1.0;
+        			break;
+				default:
+					break;
+        		}
+        	}
+        }
         
-        double minX = Math.abs(block.getBoundingBox().getMinX()) - Math.abs((int) block.getBoundingBox().getMinX());
-        double minY = Math.abs(block.getBoundingBox().getMinY()) - Math.abs((int) block.getBoundingBox().getMinY());
-        double minZ = Math.abs(block.getBoundingBox().getMinZ()) - Math.abs((int) block.getBoundingBox().getMinZ());
-        
-        double maxX = Math.abs(block.getBoundingBox().getMaxX()) - Math.abs((int) block.getBoundingBox().getMaxX());
-        double maxY = Math.abs(block.getBoundingBox().getMaxY()) - Math.abs((int) block.getBoundingBox().getMaxY());
-        double maxZ = Math.abs(block.getBoundingBox().getMaxZ()) - Math.abs((int) block.getBoundingBox().getMaxZ());
-        
-        return new double[] {minX, minY, minZ, maxX, maxY, maxZ};
+        return res;
     }
 
     @Override

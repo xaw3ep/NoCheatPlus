@@ -15,6 +15,7 @@
 package fr.neatmonster.nocheatplus.compat;
 
 import org.bukkit.Material;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -82,6 +83,19 @@ public class Bridge1_9 {
             return Double.NEGATIVE_INFINITY;
         }
         return PotionUtil.getPotionEffectAmplifier(player, LEVITATION);
+    }
+    
+    /**
+     * Test for the 'levitation' potion effect.
+     * 
+     * @param player
+     * @return Double.NEGATIVE_INFINITY if not present.
+     */
+    public static double getLevitationAmplifier(final LivingEntity entity) {
+        if (LEVITATION == null) {
+            return Double.NEGATIVE_INFINITY;
+        }
+        return PotionUtil.getPotionEffectAmplifier(entity, LEVITATION);
     }
 
     /**

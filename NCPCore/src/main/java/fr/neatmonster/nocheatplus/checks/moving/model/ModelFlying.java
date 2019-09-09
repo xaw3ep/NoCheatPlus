@@ -62,6 +62,12 @@ public class ModelFlying {
      * level.
      */
     private boolean scaleLevitationEffect = false;
+    
+    /**
+     * Allow an extra amount to ascend speed, scaling with the slowfalling effect
+     * level.
+     */
+    private boolean scaleSlowfallingEffect = false;
 
     // TODO: vertical ascend/descend, limit gain a/d/v, limit abs. distance a/d/v
     // TODO: possibly other friction based envelope constraints.
@@ -104,6 +110,7 @@ public class ModelFlying {
         gravity(config.getBoolean(prefix + ConfPaths.SUB_VERTICAL_GRAVITY, defaults.getGravity()));
         ground(config.getBoolean(prefix + ConfPaths.SUB_GROUND, defaults.getGround()));
         scaleLevitationEffect(defaults.getScaleLevitationEffect()); // Config?
+        scaleSlowfallingEffect(defaults.getScaleSlowfallingEffect());
     }
 
     /**
@@ -124,6 +131,7 @@ public class ModelFlying {
         gravity(defaults.getGravity());
         ground(defaults.getGround());
         scaleLevitationEffect(defaults.getScaleLevitationEffect());
+        scaleSlowfallingEffect(defaults.getScaleSlowfallingEffect());
     }
 
     /**
@@ -191,6 +199,10 @@ public class ModelFlying {
     public boolean getScaleLevitationEffect() {
         return scaleLevitationEffect;
     }
+    
+    public boolean getScaleSlowfallingEffect() {
+        return scaleSlowfallingEffect;
+    }
 
     public ModelFlying horizontalModSpeed(double horizontalModSpeed) {
         checkLocked();
@@ -246,4 +258,9 @@ public class ModelFlying {
         return this;
     }
 
+    public ModelFlying scaleSlowfallingEffect(final boolean scaleSlowfallingEffect) {
+        checkLocked();
+        this.scaleSlowfallingEffect = scaleSlowfallingEffect;
+        return this;
+    }
 }

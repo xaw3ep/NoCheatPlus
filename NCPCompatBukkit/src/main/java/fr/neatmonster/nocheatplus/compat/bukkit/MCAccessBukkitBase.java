@@ -116,7 +116,7 @@ public class MCAccessBukkitBase implements MCAccess {
     public String getMCVersion() {
         // Bukkit API.
         // TODO: maybe output something else.
-        return "1.4.6-1.11.2|?"; // uh oh
+        return "1.6.1-1.14.4|?"; // uh oh
     }
 
     @Override

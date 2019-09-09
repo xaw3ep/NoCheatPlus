@@ -22,6 +22,7 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
+import org.bukkit.potion.PotionEffectType;
 
 import fr.neatmonster.nocheatplus.NCPAPIProvider;
 import fr.neatmonster.nocheatplus.actions.ParameterName;
@@ -36,10 +37,12 @@ import fr.neatmonster.nocheatplus.checks.moving.model.LiftOffEnvelope;
 import fr.neatmonster.nocheatplus.checks.moving.model.ModelFlying;
 import fr.neatmonster.nocheatplus.checks.moving.model.PlayerMoveData;
 import fr.neatmonster.nocheatplus.checks.moving.util.MovingUtil;
+import fr.neatmonster.nocheatplus.compat.Bridge1_13;
 import fr.neatmonster.nocheatplus.compat.Bridge1_9;
 import fr.neatmonster.nocheatplus.compat.BridgeMisc;
 import fr.neatmonster.nocheatplus.compat.blocks.changetracker.BlockChangeTracker;
 import fr.neatmonster.nocheatplus.players.IPlayerData;
+import fr.neatmonster.nocheatplus.utilities.PotionUtil;
 import fr.neatmonster.nocheatplus.utilities.StringUtil;
 import fr.neatmonster.nocheatplus.utilities.location.PlayerLocation;
 import fr.neatmonster.nocheatplus.utilities.location.TrigUtil;
@@ -153,6 +156,14 @@ public class CreativeFly extends Check {
         }
 
         resultH *= 100.0; // Normalize to % of a block.
+		
+        long now = System.currentTimeMillis();
+        
+        // Sometimes resultH can be up to 18
+        if (Bridge1_9.isGliding(player) && (Bridge1_13.isRiptiding(player) || data.timeRiptiding + 4000 > now) && resultH<14.0) {
+        	resultH = 0.0;
+        }
+		
         if (resultH > 0.0) {
             tags.add("hdist");
         }
@@ -195,9 +206,19 @@ public class CreativeFly extends Check {
         }
 
         resultV *= 100.0; // Normalize to % of a block.
+        // Sometimes resultV can be up to 78
+        if (Bridge1_9.isGliding(player) && (Bridge1_13.isRiptiding(player) || data.timeRiptiding + 4000 > now) && resultV<60.0) {
+        	resultV = 0.0;
+        }
         if (resultV > 0.0) {
             tags.add("vdist");
         }
+        
+        //if (!player.isFlying() && !Double.isInfinite(Bridge1_9.getLevitationAmplifier(player)) 
+        //	&& !from.isHeadObstructed() && !to.isHeadObstructed() && !from.isInLiquid() && from.getY() >= to.getY()) {
+        //	resultV = Math.max(resultV,1.0);
+        //	tags.add("levitate");
+        //}
 
         final double result = Math.max(0.0, resultH) + Math.max(0.0, resultV);
 
@@ -318,8 +339,12 @@ public class CreativeFly extends Check {
         else {
             fSpeed = 1.0;
         }
-
+        
         double limitH = model.getHorizontalModSpeed() / 100.0 * ModelFlying.HORIZONTAL_SPEED * fSpeed;
+        if (model.getScaleSlowfallingEffect() && Bridge1_13.hasSlowfalling()) {
+        	Double Amplifier = PotionUtil.getPotionEffectAmplifier(from.getPlayer(), PotionEffectType.SPEED);
+        	limitH = Double.isInfinite(Amplifier) ? limitH : limitH + 0.1*(Amplifier +1);
+        }
 
         if (lastMove.toIsValid) {
             // TODO: Use last friction (as well)?
@@ -379,6 +404,9 @@ public class CreativeFly extends Check {
                 limitV += 0.046 * levitation; // (It ends up like 0.5 added extra for some levels of levitation, roughly.)
                 tags.add("levitation:" + levitation);
             }
+        } else if (model.getScaleSlowfallingEffect() && Bridge1_13.hasSlowfalling()) {
+        	Double Amplifier = PotionUtil.getPotionEffectAmplifier(from.getPlayer(), PotionEffectType.JUMP);
+        	limitV += Double.isInfinite(Amplifier) ? 0.5 : 0.5 + 0.1*(Amplifier +1);
         }
 
         // Related to elytra.

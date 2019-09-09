@@ -35,6 +35,8 @@ public final class BridgeEnchant {
     private final static Enchantment DEPTH_STRIDER = parseEnchantment("DEPTH_STRIDER");
 
     private final static Enchantment THORNS = parseEnchantment("THORNS");
+    
+    private final static Enchantment RIPTIDE = parseEnchantment("RIPTIDE");
 
     /**
      * Retrieve the maximum level for an enchantment, present in armor slots.
@@ -111,6 +113,35 @@ public final class BridgeEnchant {
     public static int getDepthStriderLevel(final Player player) {
         // Cap at three.
         return Math.min(3, getMaxLevelArmor(player, DEPTH_STRIDER));
+    }
+    
+    /**
+     * Retrieve the maximum level for an enchantment, present in main and off hand slot.
+     * 
+     * @param player
+     * @param enchantment
+     *            If null, 0 will be returned.
+     * @return 0 if none found, or the maximum found.
+     */
+    private static int getTrident(final Player player, final Enchantment enchantment) {
+        if (enchantment == null) {
+            return 0;
+        }
+        int level = 0;
+        // Find the maximum level for the given enchantment.
+        final ItemStack mainhand = player.getInventory().getItemInMainHand();
+        final ItemStack offhand = player.getInventory().getItemInOffHand();
+        if (mainhand.getType().toString().equals("TRIDENT")) {
+            return Math.max(mainhand.getEnchantmentLevel(enchantment), level);
+        }
+        if (offhand.getType().toString().equals("TRIDENT")) {
+            level = Math.max(offhand.getEnchantmentLevel(enchantment), level);
+        }
+        return level;
+    }
+    
+    public static int getRiptideLevel(final Player player) {
+    	return Math.min(3, getTrident(player, RIPTIDE));
     }
 
 }

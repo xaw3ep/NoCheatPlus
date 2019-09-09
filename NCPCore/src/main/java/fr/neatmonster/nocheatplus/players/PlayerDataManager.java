@@ -907,8 +907,13 @@ public class PlayerDataManager  implements IPlayerDataManager, ComponentWithName
 
     @Override
     public PlayerData getPlayerData(final Player player, boolean create) {
+        try {
         return getPlayerData(player.getUniqueId(), player.getName(), 
                 create, create ? worldDataManager.getWorldDataSafe(player) : null);
+        } catch (Exception e) {
+    		// Fake player
+    		return null;
+        }    
     }
 
     @Override

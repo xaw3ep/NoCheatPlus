@@ -34,14 +34,14 @@ public class BukkitSeaPickle implements BukkitShapeModel {
         if (blockData instanceof SeaPickle) {
             final SeaPickle pick = (SeaPickle) blockData;
             switch (pick.getPickles()) {
-                case 1: //  .625 , 0 , .375 max: .375 , 375 , .625
-                    return new double[] {0.625, 0.0, 0.375, 0.375, 0.375, 0.625};
-                case 2: // .8125 , 0 , .1875 max: .1875 , .375 , .8125
-                    return new double[] {0.8125, 0.0, 0.1875, 0.1875, 0.375, 0.8125};
-                case 3: // .875 0 .125 max: .125 .375 .875
-                	return new double[] {0.875, 0.0, 0.125, 0.125, 0.375, 0.875};
-                case 4: // .875 0 .125 max: .125 .4375 .875
-                	return new double[] {0.875, 0.0, 0.125, 0.125, 0.4375, 0.875};
+                case 1: //  .375 , 0 , .375 max: .625 , 375 , .625
+                    return new double[] {0.375, 0.0, 0.375, 0.625, 0.375, 0.625};
+                case 2: // .1875 , 0 , .1875 max: .8125 , .375 , .8125
+                    return new double[] {0.1875, 0.0, 0.1875, 0.8125, 0.375, 0.8125};
+                case 3: // .125 0 .125 max: .875 .375 .875
+                	return new double[] {0.125, 0.0, 0.125, 0.875, 0.375, 0.875};
+                case 4: // .125 0 .125 max: .875 .4375 .875
+                	return new double[] {0.125, 0.0, 0.125, 0.875, 0.4375, 0.875};
                 default:
                     break;
             }

@@ -19,6 +19,7 @@ import fr.neatmonster.nocheatplus.checks.moving.MovingData;
 import fr.neatmonster.nocheatplus.checks.moving.model.LiftOffEnvelope;
 import fr.neatmonster.nocheatplus.checks.moving.model.PlayerMoveData;
 import fr.neatmonster.nocheatplus.checks.workaround.WRPT;
+import fr.neatmonster.nocheatplus.compat.Bridge1_13;
 import fr.neatmonster.nocheatplus.utilities.location.PlayerLocation;
 
 public class MagicAir {
@@ -273,7 +274,7 @@ public class MagicAir {
                         && yDistance - lastMove.yDistance < 0.0114
                         // 1: Any leaving liquid and keeping distance once.
                         || data.sfJumpPhase == 1 
-                        && Math.abs(yDistance) <= Magic.swimBaseSpeedV() && yDistance == lastMove.yDistance
+                        && Math.abs(yDistance) <= Magic.swimBaseSpeedV(Bridge1_13.isSwimming(from.getPlayer())) && yDistance == lastMove.yDistance
                         )
                 ;
     }

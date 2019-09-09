@@ -20,6 +20,7 @@ import java.util.LinkedList;
 
 import org.bukkit.Material;
 
+import fr.neatmonster.nocheatplus.compat.Bridge1_13;
 import fr.neatmonster.nocheatplus.compat.Bridge1_9;
 import fr.neatmonster.nocheatplus.compat.BridgeMisc;
 
@@ -477,6 +478,15 @@ public class DefaultConfig extends ConfigFile {
             set(ConfPaths.MOVING_CREATIVEFLY_MODEL + "levitation." + ConfPaths.SUB_GRAVITY, false, 785);
             set(ConfPaths.MOVING_CREATIVEFLY_MODEL + "levitation." + ConfPaths.SUB_GROUND, false, 785);
         }
+        if (Bridge1_13.hasSlowfalling()) {
+            set(ConfPaths.MOVING_CREATIVEFLY_MODEL + "slowfalling." + ConfPaths.SUB_HORIZONTAL_SPEED, 110, 785);
+            set(ConfPaths.MOVING_CREATIVEFLY_MODEL + "slowfalling." + ConfPaths.SUB_VERTICAL_ASCEND_SPEED, 10, 785);
+            set(ConfPaths.MOVING_CREATIVEFLY_MODEL + "slowfalling." + ConfPaths.SUB_VERTICAL_MAXHEIGHT, 128, 1104);
+            set(ConfPaths.MOVING_CREATIVEFLY_MODEL + "slowfalling." + ConfPaths.SUB_VERTICAL_GRAVITY, false, 785);
+            set(ConfPaths.MOVING_CREATIVEFLY_MODEL + "slowfalling." + ConfPaths.SUB_MODIFIERS, false, 785);
+            set(ConfPaths.MOVING_CREATIVEFLY_MODEL + "slowfalling." + ConfPaths.SUB_GRAVITY, true, 785);
+            set(ConfPaths.MOVING_CREATIVEFLY_MODEL + "slowfalling." + ConfPaths.SUB_GROUND, true, 785);
+        }
         if (Bridge1_9.hasElytra()) {
             set(ConfPaths.MOVING_CREATIVEFLY_MODEL + "elytra." + ConfPaths.SUB_HORIZONTAL_SPEED, 520, 785);
             set(ConfPaths.MOVING_CREATIVEFLY_MODEL + "elytra." + ConfPaths.SUB_HORIZONTAL_MODSPRINT, 1.0, 785);
@@ -571,6 +581,8 @@ public class DefaultConfig extends ConfigFile {
         set(ConfPaths.MOVING_VEHICLE_MOREPACKETS_ACTIONS, "cancel vl>10 log:morepackets:0:2:if cancel", 785);
 
         set(ConfPaths.MOVING_VEHICLE_ENVELOPE_ACTIVE, "default", 785);
+        set(ConfPaths.MOVING_VEHICLE_ENVELOPE_HSPEEDCAP + ".default", 0.9, 1154);
+        set(ConfPaths.MOVING_VEHICLE_ENVELOPE_HSPEEDCAP + ".pig", 0.3, 1154);
         set(ConfPaths.MOVING_VEHICLE_ENVELOPE_ACTIONS, "cancel vl>100 cancel log:vehicleenvelope:0:15:icf", 785);
 
         // Messages

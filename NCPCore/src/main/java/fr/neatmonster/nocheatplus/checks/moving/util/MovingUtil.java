@@ -35,6 +35,7 @@ import fr.neatmonster.nocheatplus.checks.moving.model.PlayerMoveData;
 import fr.neatmonster.nocheatplus.checks.moving.player.PlayerSetBackMethod;
 import fr.neatmonster.nocheatplus.checks.net.NetData;
 import fr.neatmonster.nocheatplus.checks.net.model.CountableLocation;
+import fr.neatmonster.nocheatplus.compat.Bridge1_13;
 import fr.neatmonster.nocheatplus.compat.Bridge1_9;
 import fr.neatmonster.nocheatplus.compat.BridgeMisc;
 import fr.neatmonster.nocheatplus.compat.MCAccess;
@@ -96,6 +97,7 @@ public class MovingUtil {
                         Double.isInfinite(Bridge1_9.getLevitationAmplifier(player)) 
                         || fromLocation.isInLiquid()
                         )
+                && (Double.isInfinite(Bridge1_13.getSlowfallingAmplifier(player)))
                 ;
     }
 

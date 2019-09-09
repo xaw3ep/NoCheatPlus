@@ -35,6 +35,7 @@ import fr.neatmonster.nocheatplus.checks.moving.player.PlayerSetBackMethod;
 import fr.neatmonster.nocheatplus.checks.moving.util.MovingUtil;
 import fr.neatmonster.nocheatplus.command.CommandUtil;
 import fr.neatmonster.nocheatplus.compat.AlmostBoolean;
+import fr.neatmonster.nocheatplus.compat.Bridge1_13;
 import fr.neatmonster.nocheatplus.compat.Bridge1_9;
 import fr.neatmonster.nocheatplus.compat.versions.Bugs;
 import fr.neatmonster.nocheatplus.compat.versions.ServerVersion;
@@ -56,6 +57,7 @@ public class MovingConfig extends ACheckConfig {
     // Model flying ids.
     public static final String ID_JETPACK_ELYTRA = "jetpack.elytra";
     public static final String ID_POTION_LEVITATION = "potion.levitation";
+    public static final String ID_POTION_SLOWFALLING = "potion.slowfalling";
 
     // INSTANCE
 
@@ -65,6 +67,7 @@ public class MovingConfig extends ACheckConfig {
     private final Map<GameMode, ModelFlying> flyingModelGameMode = new HashMap<GameMode, ModelFlying>();
     private final ModelFlying flyingModelElytra;
     private final ModelFlying flyingModelLevitation;
+    private final ModelFlying flyingModelSlowfalling;
     public final ActionList creativeFlyActions;
 
     /** Assumed number of packets per second under ideal conditions. */
@@ -209,6 +212,9 @@ public class MovingConfig extends ACheckConfig {
         flyingModelLevitation = new ModelFlying(ID_POTION_LEVITATION, config, 
                 ConfPaths.MOVING_CREATIVEFLY_MODEL + "levitation.", 
                 new ModelFlying(null, defaultModel).scaleLevitationEffect(true).lock());
+        flyingModelSlowfalling = new ModelFlying(ID_POTION_SLOWFALLING, config, 
+                ConfPaths.MOVING_CREATIVEFLY_MODEL + "slowfalling.", 
+                new ModelFlying(null, defaultModel).scaleSlowfallingEffect(true).lock());
         flyingModelElytra = new ModelFlying(ID_JETPACK_ELYTRA, config, 
                 ConfPaths.MOVING_CREATIVEFLY_MODEL + "elytra.", 
                 new ModelFlying(null, defaultModel).verticalAscendGliding(true).lock());
@@ -389,6 +395,10 @@ public class MovingConfig extends ACheckConfig {
         if (gameMode != GameMode.CREATIVE && !Double.isInfinite(Bridge1_9.getLevitationAmplifier(player))
                 && !fromLocation.isInLiquid()) {
             return flyingModelLevitation;
+        }
+        // Slow Falling
+        if (gameMode != GameMode.CREATIVE && !Double.isInfinite(Bridge1_13.getSlowfallingAmplifier(player))) {
+                	return flyingModelSlowfalling;
         }
         // Default by game mode.
         return modelGameMode;

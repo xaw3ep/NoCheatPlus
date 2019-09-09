@@ -125,6 +125,10 @@ public class FastClick extends Check {
             amount = 1f;
         }
 
+        if (isShiftClick && inventoryAction.equals("MOVE_TO_OTHER_INVENTORY") && (cursorMat != null && cursorMat != Material.AIR) && clickedMat != Material.AIR) {
+        	return false;
+        }
+        
         data.fastClickFreq.add(now, amount);
 
         float shortTerm = data.fastClickFreq.bucketScore(0);

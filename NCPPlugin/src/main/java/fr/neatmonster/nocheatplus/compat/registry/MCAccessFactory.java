@@ -33,9 +33,10 @@ import fr.neatmonster.nocheatplus.logging.StaticLog;
  */
 public class MCAccessFactory {
 
+    //Message below is sent when CBDedicated and CBReflect failed to run and NCP switches to bukkit's api as it can't tell the server version.
     private final String[] updateLocs = new String[] {
-            " Check for updates and support at BukkitDev: https://dev.bukkit.org/projects/nocheatplus/",
-            " Development builds (unsupported by the Bukkit Staff, use at your own risk): https://ci.md-5.net/job/NoCheatPlus/changes",
+//            " Check for updates and support at BukkitDev: https://dev.bukkit.org/projects/nocheatplus/",
+//            " Development builds (unsupported by the Bukkit Staff, use at your own risk): https://ci.md-5.net/job/NoCheatPlus/changes",
     };
 
     /**
@@ -49,6 +50,14 @@ public class MCAccessFactory {
         MCAccess mcAccess = null;
         // Try to set up native access.
 
+        // Bukkit API only: 1.13 (and possibly later).
+        try {
+            return new MCAccessBukkitModern();
+        }
+        catch(Throwable t) {
+            throwables.add(t);
+        }
+        
         // CraftBukkit (dedicated).
         if (config.enableCBDedicated) {
             mcAccess = getMCAccessCraftBukkit(throwables);
@@ -65,14 +74,6 @@ public class MCAccessFactory {
             catch (Throwable t) {
                 throwables.add(t);
             }
-        }
-
-        // Bukkit API only: 1.13 (and possibly later).
-        try {
-            return new MCAccessBukkitModern();
-        }
-        catch(Throwable t) {
-            throwables.add(t);
         }
 
         // Try to set up api-only access (since 1.4.6).

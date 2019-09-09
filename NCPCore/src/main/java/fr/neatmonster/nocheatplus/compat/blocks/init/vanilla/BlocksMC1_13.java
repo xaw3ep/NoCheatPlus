@@ -36,7 +36,11 @@ public class BlocksMC1_13 implements BlockPropertiesSetup {
 
     @Override
     public void setupBlockProperties(WorldConfigProvider<?> worldConfigProvider) {
-
+        // Add flag for anvil
+        BlockFlags.addFlags("ANVIL", BlockProperties.F_GROUND_HEIGHT | BlockProperties.F_GROUND);
+        // Change flag for walls
+        BlockFlags.addFlags("COBBLESTONE_WALL", BlockProperties.F_THICK_FENCE2);
+        BlockFlags.removeFlags("COBBLESTONE_WALL", BlockProperties.F_THICK_FENCE);
         // Void air.
         BlockInit.setAs("VOID_AIR", Material.AIR);
         // Cave air.
@@ -170,6 +174,7 @@ public class BlocksMC1_13 implements BlockPropertiesSetup {
         
         // Sea Pickle.
         BlockProperties.setBlockProps("SEA_PICKLE", BlockProperties.instantType);
+        BlockFlags.addFlags("SEA_PICKLE", BlockProperties.F_GROUND | BlockProperties.F_GROUND_HEIGHT);
 
         // Turtle egg.
         BlockProperties.setBlockProps("TURTLE_EGG", new BlockProps(

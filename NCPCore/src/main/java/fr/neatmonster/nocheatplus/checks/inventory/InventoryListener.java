@@ -167,7 +167,7 @@ public class InventoryListener  extends CheckListener implements JoinLeaveListen
                 }
                 final InventoryConfig cc = pData.getGenericInstance(InventoryConfig.class);
                 // Still check instantBow, whatever yawrate says.
-                if (instantBow.check(player, event.getForce(), now)) {
+                if (!event.getBow().getType().toString().equals("CROSSBOW") && instantBow.check(player, event.getForce(), now)) {
                     // The check requested the event to be cancelled.
                     event.setCancelled(true);
                 }
@@ -265,7 +265,7 @@ public class InventoryListener  extends CheckListener implements JoinLeaveListen
         // Fast inventory manipulation check.
         if (fastClick.isEnabled(player, pData)) {
             final InventoryConfig cc = pData.getGenericInstance(InventoryConfig.class);
-            if (player.getGameMode() != GameMode.CREATIVE || !cc.fastClickSpareCreative || !cc.inventoryExemptions.contains(ChatColor.stripColor(event.getInventory().getName()))) {
+            if (!((event.getView().getType().equals(InventoryType.CREATIVE) || player.getGameMode() == GameMode.CREATIVE) && cc.fastClickSpareCreative) && !cc.inventoryExemptions.contains(ChatColor.stripColor(event.getView().getTitle()))) {
                 if (fastClick.check(player, now, 
                         event.getView(), slot, cursor, clicked, event.isShiftClick(), 
                         inventoryAction, data, cc, pData)) {  
@@ -273,7 +273,7 @@ public class InventoryListener  extends CheckListener implements JoinLeaveListen
                     cancel = true;
                 }
                   // Listen for more than just a chest?
-                 if (event.getInventory().getType().equals(InventoryType.CHEST) || event.getInventory().getType().equals(InventoryType.ENDER_CHEST)) {
+                 if (event.getInventory().getType().equals(InventoryType.CHEST) || event.getInventory().getType().equals(InventoryType.ENDER_CHEST) || event.getInventory().getType().toString().equals("BARREL") || event.getInventory().getType().toString().equals("SHULKER_BOX")) {
         			if (fastClick.fastClickChest(player, data, cc)) {
         				cancel = true;
         				keepCancel = true;
@@ -321,7 +321,7 @@ public class InventoryListener  extends CheckListener implements JoinLeaveListen
     	
 	// Check left click too to prevent any bypasses
     	if (event.getAction() == Action.RIGHT_CLICK_BLOCK && event.getClickedBlock() != null || event.getAction() == Action.LEFT_CLICK_BLOCK && event.getClickedBlock() != null) {
-    	if (event.getClickedBlock().getType() == Material.CHEST || event.getClickedBlock().getType() == Material.ENDER_CHEST) {
+    	if (event.getClickedBlock().getType().toString().endsWith("CHEST") || event.getClickedBlock().getType().toString().equals("BARREL") || event.getClickedBlock().getType().toString().endsWith("SHULKER_BOX")) {
 		data.chestOpenTime = System.currentTimeMillis();
     	    }
     	} 
@@ -361,10 +361,10 @@ public class InventoryListener  extends CheckListener implements JoinLeaveListen
         builder.append(view.getClass().getName());
 
         // Bottom inventory.
-        addInventory(player, view.getBottomInventory(), " , Bottom: ", builder);
+        addInventory(player, view.getBottomInventory(), view, " , Bottom: ", builder);
 
         // Top inventory.
-        addInventory(player, view.getBottomInventory(), " , Top: ", builder);
+        addInventory(player, view.getBottomInventory(), view, " , Top: ", builder);
         
         if (action != null) {
             builder.append(" , Action: ");
@@ -379,17 +379,15 @@ public class InventoryListener  extends CheckListener implements JoinLeaveListen
         debug(player, builder.toString());
     }
 
-    private void addInventory(final Player player, final Inventory inventory, final String prefix, 
+    private void addInventory(final Player player, final Inventory inventory, final InventoryView view, final String prefix, 
             final StringBuilder builder) {
         builder.append(prefix);
         if (inventory == null) {
             builder.append("(none)");
         }
         else {
-            final String name = inventory.getName();
-            final String title = inventory.getTitle();
-            final boolean same = name == null && title == null || name != null && name.equals(title);
-            builder.append((same ? name : (name + "/" + title)));
+            String name = view.getTitle();
+            builder.append(name);
             builder.append("/");
             builder.append(inventory.getClass().getName());
         }

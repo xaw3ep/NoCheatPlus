@@ -40,6 +40,7 @@ public class VanillaBlocksFactory {
             setups.add(new BlocksMC1_11());
             setups.add(new BlocksMC1_12());
             setups.add(new BlocksMC1_13());
+            setups.add(new BlocksMC1_14());
         }
         catch(Throwable t){}
         for (final BlockPropertiesSetup setup : setups){

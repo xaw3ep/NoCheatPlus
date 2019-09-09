@@ -16,6 +16,7 @@ package fr.neatmonster.nocheatplus.compat.blocks.init.vanilla;
 
 import org.bukkit.Material;
 
+import fr.neatmonster.nocheatplus.compat.BridgeMaterial;
 import fr.neatmonster.nocheatplus.compat.blocks.BlockPropertiesSetup;
 import fr.neatmonster.nocheatplus.compat.blocks.init.BlockInit;
 import fr.neatmonster.nocheatplus.config.WorldConfigProvider;
@@ -40,6 +41,8 @@ public class BlocksMC1_6_1 implements BlockPropertiesSetup{
         // Hay Bale
         BlockInit.setPropsAs("HAY_BLOCK", Material.STONE_BUTTON);
         BlockFlags.setFlagsAs("HAY_BLOCK", Material.STONE); // TODO: Assumption (!).
+        
+        if (BridgeMaterial.getBlock("wall_sign") != null) BlockInit.setAs("WALL_SIGN", BridgeMaterial.SIGN);
 
         // (Carpet via generic setup.)
 

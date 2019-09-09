@@ -22,6 +22,7 @@ import fr.neatmonster.nocheatplus.compat.MCAccess;
 import fr.neatmonster.nocheatplus.components.registry.event.IHandle;
 import fr.neatmonster.nocheatplus.utilities.map.BlockCache;
 import fr.neatmonster.nocheatplus.utilities.map.BlockProperties;
+import fr.neatmonster.nocheatplus.compat.BridgeMaterial;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -32,6 +33,8 @@ import fr.neatmonster.nocheatplus.utilities.map.BlockProperties;
  */
 public class RichEntityLocation extends RichBoundsLocation {
 
+    private final boolean is1_14Above = BridgeMaterial.getBlock("lectern") != null;
+    
     /*
      * TODO: HumanEntity default with + height (1.11.2): elytra 0.6/0.6,
      * sleeping 0.2/0.2, sneaking 0.6/1.65, normal 0.6/1.8 - head height is 0.4
@@ -369,7 +372,9 @@ public class RichEntityLocation extends RichBoundsLocation {
             isLiving = true;
             final LivingEntity living = (LivingEntity) entity;
             eyeHeight = living.getEyeHeight();
-            fullHeight = Math.max(Math.max(fullHeight, eyeHeight), living.getEyeHeight(true));
+            //Sneaking in Minecraft 1.14 and possibility later version will have lower height
+            // 0.179999?
+            fullHeight = is1_14Above ? eyeHeight + 0.179 : Math.max(Math.max(fullHeight, eyeHeight), living.getEyeHeight(true));
         }
         else {
             isLiving = false;

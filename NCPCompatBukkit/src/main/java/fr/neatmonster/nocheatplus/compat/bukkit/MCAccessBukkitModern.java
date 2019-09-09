@@ -21,21 +21,7 @@ import org.bukkit.Material;
 
 import fr.neatmonster.nocheatplus.compat.BridgeMaterial;
 import fr.neatmonster.nocheatplus.compat.blocks.init.BlockInit;
-import fr.neatmonster.nocheatplus.compat.bukkit.model.BukkitChorusPlant;
-import fr.neatmonster.nocheatplus.compat.bukkit.model.BukkitCocoa;
-import fr.neatmonster.nocheatplus.compat.bukkit.model.BukkitDirectionalCentered;
-import fr.neatmonster.nocheatplus.compat.bukkit.model.BukkitDoor;
-import fr.neatmonster.nocheatplus.compat.bukkit.model.BukkitEndPortalFrame;
-import fr.neatmonster.nocheatplus.compat.bukkit.model.BukkitFence;
-import fr.neatmonster.nocheatplus.compat.bukkit.model.BukkitGate;
-import fr.neatmonster.nocheatplus.compat.bukkit.model.BukkitSeaPickle;
-import fr.neatmonster.nocheatplus.compat.bukkit.model.BukkitShapeModel;
-import fr.neatmonster.nocheatplus.compat.bukkit.model.BukkitShulkerBox;
-import fr.neatmonster.nocheatplus.compat.bukkit.model.BukkitSlab;
-import fr.neatmonster.nocheatplus.compat.bukkit.model.BukkitStairs;
-import fr.neatmonster.nocheatplus.compat.bukkit.model.BukkitStatic;
-import fr.neatmonster.nocheatplus.compat.bukkit.model.BukkitTrapDoor;
-import fr.neatmonster.nocheatplus.compat.bukkit.model.BukkitTurtleEgg;
+import fr.neatmonster.nocheatplus.compat.bukkit.model.*;
 import fr.neatmonster.nocheatplus.config.WorldConfigProvider;
 import fr.neatmonster.nocheatplus.utilities.map.BlockCache;
 import fr.neatmonster.nocheatplus.utilities.map.BlockFlags;
@@ -71,16 +57,22 @@ public class MCAccessBukkitModern extends MCAccessBukkit {
             0.4375, 1.0);
     private static final BukkitShapeModel MODEL_THICK_FENCE = new BukkitFence(
             0.375, 1.5);
+    private static final BukkitShapeModel MODEL_THICK_FENCE2 = new BukkitWall(
+            0.25, 1.5);
     // .75 .25 0 max: .25 .75 .5
-    private static final BukkitShapeModel MODEL_WALL_HEAD = new BukkitStatic(
-    		0.75, 0.25, 0.0, 0.25, 0.75, 0.5);
+    private static final BukkitShapeModel MODEL_WALL_HEAD = new BukkitWallHead();
 
 
     // Static blocks (various height and inset values).
+    private static final BukkitShapeModel MODEL_BELL = new BukkitBell();
+    private static final BukkitShapeModel MODEL_LECTERN = new BukkitStatic(0.25, 0.875);
+    private static final BukkitShapeModel MODEL_BAMBOO = new BukkitBamboo();
+    private static final BukkitShapeModel MODEL_ANVIL = new BukkitAnvil();
     private static final BukkitShapeModel MODEL_LILY_PAD = new BukkitStatic(
             0.09375);
     private static final BukkitShapeModel MODEL_FLOWER_POT = new BukkitStatic(
             0.33, 0.375); // TODO: XZ really?
+    private static final BukkitShapeModel MODEL_LANTERN = new BukkitLantern();
     private static final BukkitShapeModel MODEL_CONDUIT = new BukkitStatic(
     	    0.33, 0.6875);
     private static final BukkitShapeModel MODEL_GROUND_HEAD= new BukkitStatic(
@@ -130,7 +122,7 @@ public class MCAccessBukkitModern extends MCAccessBukkit {
 
     @Override
     public String getMCVersion() {
-        return "1.13|?";
+        return "1.13-1.14.4|?";
     }
 
     @Override
@@ -149,21 +141,20 @@ public class MCAccessBukkitModern extends MCAccessBukkit {
         // TODO: Also consider removing flags (passable_x4 etc).
 
     	// Variables for repeated flags (Temporary flags, these should be fixed later so that they are not added here)
-    	final long headFlags = BlockFlags.SOLID_GROUND | BlockProperties.F_XZ100 | BlockProperties.F_IGN_PASSABLE;
-    	final long blockFix = BlockFlags.SOLID_GROUND | BlockProperties.F_XZ100 | BlockProperties.F_IGN_PASSABLE;
+    	final long blockFix = BlockFlags.SOLID_GROUND;
     	// Adjust flags for individual blocks.
         BlockProperties.setBlockFlags(Material.CAULDRON, 
                 BlockFlags.SOLID_GROUND | BlockProperties.F_GROUND_HEIGHT 
                 | BlockProperties.F_MIN_HEIGHT4_1);
         BlockProperties.setBlockFlags(Material.COCOA, blockFix);
-        BlockProperties.setBlockFlags(Material.TURTLE_EGG, BlockProperties.F_IGN_PASSABLE | BlockFlags.SOLID_GROUND | BlockProperties.F_GROUND | BlockProperties.F_XZ100);
+        BlockProperties.setBlockFlags(Material.TURTLE_EGG, blockFix);
         BlockProperties.setBlockFlags(Material.CHORUS_PLANT, blockFix);
-        BlockProperties.setBlockFlags(Material.CREEPER_WALL_HEAD, headFlags);
-        BlockProperties.setBlockFlags(Material.ZOMBIE_WALL_HEAD, headFlags);
-        BlockProperties.setBlockFlags(Material.PLAYER_WALL_HEAD, headFlags);
-        BlockProperties.setBlockFlags(Material.DRAGON_WALL_HEAD, headFlags);
-        BlockProperties.setBlockFlags(Material.WITHER_SKELETON_WALL_SKULL, headFlags);
-        BlockProperties.setBlockFlags(Material.SKELETON_WALL_SKULL, headFlags);
+        BlockProperties.setBlockFlags(Material.CREEPER_WALL_HEAD, blockFix);
+        BlockProperties.setBlockFlags(Material.ZOMBIE_WALL_HEAD, blockFix);
+        BlockProperties.setBlockFlags(Material.PLAYER_WALL_HEAD, blockFix);
+        BlockProperties.setBlockFlags(Material.DRAGON_WALL_HEAD, blockFix);
+        BlockProperties.setBlockFlags(Material.WITHER_SKELETON_WALL_SKULL, blockFix);
+        BlockProperties.setBlockFlags(Material.SKELETON_WALL_SKULL, blockFix);
 
         // Directly keep blocks as is.
         for (final Material mat : new Material[] {
@@ -176,14 +167,20 @@ public class MCAccessBukkitModern extends MCAccessBukkit {
                 Material.BEACON,
                 Material.LADDER,
                 Material.VINE,
-                Material.ANVIL,
-                Material.CHIPPED_ANVIL,
-                Material.DAMAGED_ANVIL,
                 Material.CHORUS_FLOWER
         }) {
             processedBlocks.add(mat);
         }
 
+        //Anvil
+        for (Material mat : new Material[] {
+        		Material.ANVIL,
+        		Material.CHIPPED_ANVIL,
+        		Material.DAMAGED_ANVIL
+        }) {
+        	addModel(mat, MODEL_ANVIL);
+        }
+        
         // Lily pad
         addModel(BridgeMaterial.LILY_PAD, MODEL_LILY_PAD);
 
@@ -330,6 +327,22 @@ public class MCAccessBukkitModern extends MCAccessBukkit {
         	addModel(mat, MODEL_CHORUS_PLANT);
         }
 
+        //Lantern
+        Material mt = BridgeMaterial.getBlock("lantern");
+        if (mt != null) addModel(mt, MODEL_LANTERN);
+        
+        // Lectern
+        mt = BridgeMaterial.getBlock("lectern");
+        if (mt != null) addModel(mt, MODEL_LECTERN);
+        
+        // Bamboo        
+        mt = BridgeMaterial.getBlock("bamboo");
+        if (mt != null) addModel(mt, MODEL_BAMBOO);
+        
+        // Bell
+        mt = BridgeMaterial.getBlock("bell");
+        if (mt != null) addModel(mt, MODEL_BELL);
+        
         // Sort to processed by flags.
         for (final Material mat : Material.values()) {
             final long flags = BlockProperties.getBlockFlags(mat);
@@ -337,7 +350,7 @@ public class MCAccessBukkitModern extends MCAccessBukkit {
             if (BlockFlags.hasAnyFlag(flags, BlockProperties.F_STAIRS)) {
                 addModel(mat, MODEL_STAIRS);
             }
-            // Fences, cobblestone wall.
+            // Fences.
             if (BlockFlags.hasAnyFlag(flags, BlockProperties.F_THICK_FENCE)) {
                 if (BlockFlags.hasAnyFlag(flags, BlockProperties.F_PASSABLE_X4)) {
                     // TODO: Perhaps another model flag.
@@ -346,6 +359,10 @@ public class MCAccessBukkitModern extends MCAccessBukkit {
                 else {
                     addModel(mat, MODEL_THICK_FENCE);
                 }
+            }
+            // Walls
+            if (BlockFlags.hasAnyFlag(flags, BlockProperties.F_THICK_FENCE2)) {
+                    addModel(mat, MODEL_THICK_FENCE2);
             }
         }
 

@@ -48,21 +48,27 @@ public class Magic {
     public static final double WALK_SPEED           = 0.221D;
     public static final double modSneak             = 0.13D / WALK_SPEED;
     //    public static final double modSprint            = 0.29 / walkSpeed; // TODO: without bunny  0.29 / practical is 0.35
-    public static final double modBlock             = 0.16D / WALK_SPEED;
-    public static final double modSwim              = 0.3D / WALK_SPEED; // 0.152D / WALK_SPEED
-    public static final double modRiptide           = 10.0D;
-    public static final double modDolphinsGrace     = 5.0D; // TODO: Adjust value to be more stricter and closer to actual movement speed, and use different value from in water vs above water
+    public static final double modBlock             = 0.1277D / WALK_SPEED;
+    public static final double[] modSwim            = new double[] {0.155D / WALK_SPEED, 0.3D / WALK_SPEED, 0.115D / WALK_SPEED}; // 0.155D / WALK_SPEED(1.13 above); 0.115D / WALK_SPEED(1.12.2 below)
+    public static final double[] modRiptide         = new double[] {
+    		1.0,
+    		4.8, //4.6 ?
+    		7.2, //7.0 ?
+    		10.0
+    };
+    public static final double modDolphinsGrace     = 3.6D; // TODO: Adjust value to be more stricter and closer to actual movement speed, and use different value from in water vs above water
     public static final double[] modDepthStrider    = new double[] {
             1.0,
-            0.1645 / modSwim / WALK_SPEED,
-            0.1995 / modSwim / WALK_SPEED,
-            1.0 / modSwim, // Results in walkspeed.
+            0.1645 / modSwim[0] / WALK_SPEED,
+            0.1995 / modSwim[0] / WALK_SPEED,
+            1.0 / modSwim[0], // Results in walkspeed.
     };
     public static final double modWeb               = 0.105D / WALK_SPEED; // TODO: walkingSpeed * 0.15D; <- does not work
     public static final double modSoulSand          = 0.16D / WALK_SPEED;
     public static final double modIce               = 2.5D; // 
     /** Faster moving down stream (water mainly). */
-    public static final double modDownStream        = 0.19 / (WALK_SPEED * modSwim);
+    public static final double modDownStream        = 0.19 / (WALK_SPEED * modSwim[0]);
+    public static final double modDownStream2       = 0.19 / (WALK_SPEED * modSwim[1]);
 
     /**
      * Somewhat arbitrary horizontal speed gain maximum for advance glide phase.
@@ -125,9 +131,9 @@ public class Magic {
      * 
      * @return
      */
-    public static double swimBaseSpeedV() {
+    public static double swimBaseSpeedV(boolean isSwimming) {
         // TODO: Does this have to be the dynamic walk speed (refactoring)?
-        return WALK_SPEED * modSwim + 0.1; // 0.244
+        return isSwimming ? WALK_SPEED * modSwim[1] + 0.1 : WALK_SPEED * modSwim[0] + 0.1; // 0.244
     }
 
     /**

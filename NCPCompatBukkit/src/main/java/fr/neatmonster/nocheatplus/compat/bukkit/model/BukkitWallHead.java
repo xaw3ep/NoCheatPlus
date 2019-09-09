@@ -16,33 +16,34 @@ package fr.neatmonster.nocheatplus.compat.bukkit.model;
 
 import org.bukkit.World;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockState;
+import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.BlockData;
-import org.bukkit.block.data.type.TurtleEgg;
+import org.bukkit.block.data.Directional;
 
 import fr.neatmonster.nocheatplus.utilities.map.BlockCache;
 
-public class BukkitTurtleEgg implements BukkitShapeModel {
+public class BukkitWallHead implements BukkitShapeModel {
 
     @Override
     public double[] getShape(final BlockCache blockCache, 
             final World world, final int x, final int y, final int z) {
-        final Block block = world.getBlockAt(x, y, z);
-        final BlockState state = block.getState();
-        final BlockData blockData = state.getBlockData();
 
-        if (blockData instanceof TurtleEgg) {
-            final TurtleEgg egg = (TurtleEgg) blockData;
-            switch (egg.getEggs()) {
-                case 1: // .8125 0.0 .1875 max: .25 .4375 .75
-                    return new double[] {0.23, 0.0, 0.23, 0.75, 0.4375, 0.75};
-                case 2: // .9375 .0 .0625 max: 0.0625 .4375 .9375
-                case 3:
-                case 4:
-                    return new double[] {0.0625, 0.0, 0.0625, 0.9375, 0.4375, 0.9375};
-                default:
-                    break;
-            }
+        final Block block = world.getBlockAt(x, y, z);
+        final BlockData blockData = block.getBlockData();
+        if (blockData instanceof Directional) {
+        	BlockFace face = ((Directional) blockData).getFacing();
+        	switch (face) {
+        	case NORTH:
+        		return new double[] {0.25, 0.25, 0.5, 0.75, 0.75, 1.0};
+        	case SOUTH:
+        		return new double[] {0.25, 0.25, 0.0, 0.75, 0.75, 0.5};
+        	case WEST:
+        		return new double[] {0.5, 0.25, 0.25, 1.0, 0.75, 0.75};
+        	case EAST:
+        		return new double[] {0.0, 0.25, 0.25, 0.5, 0.75, 0.75};
+			default:
+				break;
+        	}
         }
         return new double[] {0.0, 0.0, 0.0, 1.0, 1.0, 1.0};
     }
