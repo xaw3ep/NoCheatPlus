@@ -141,9 +141,11 @@ public class Permissions {
     public static final RegisteredPermission  FIGHT_FASTHEAL               = add(FIGHT + ".fastheal");
     public static final RegisteredPermission  FIGHT_GODMODE                = add(FIGHT + ".godmode");
     public static final RegisteredPermission  FIGHT_NOSWING                = add(FIGHT + ".noswing");
+    public static final RegisteredPermission  FIGHT_PITCHPATTERN           = add(FIGHT + ".pitchpattern");
     public static final RegisteredPermission  FIGHT_REACH                  = add(FIGHT + ".reach");
     public static final RegisteredPermission  FIGHT_SELFHIT                = add(FIGHT + ".selfhit");
     public static final RegisteredPermission  FIGHT_SPEED                  = add(FIGHT + ".speed");
+    public static final RegisteredPermission  FIGHT_WRONGTURN              = add(FIGHT + ".wrongturn");
 
     public static final RegisteredPermission  INVENTORY                    = add(CHECKS + ".inventory");
     public static final RegisteredPermission  INVENTORY_DROP               = add(INVENTORY + ".drop");

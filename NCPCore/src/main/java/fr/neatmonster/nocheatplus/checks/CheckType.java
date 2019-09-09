@@ -78,11 +78,11 @@ public enum CheckType {
     FIGHT_FASTHEAL(CheckTypeType.CHECK, FIGHT, Permissions.FIGHT_FASTHEAL),
     FIGHT_GODMODE(CheckTypeType.CHECK, FIGHT, Permissions.FIGHT_GODMODE),
     FIGHT_NOSWING(CheckTypeType.CHECK, FIGHT, Permissions.FIGHT_NOSWING),
-    FIGHT_PITCHPATTERN(CheckTypeType.CHECK, FIGHT, null),
+    FIGHT_PITCHPATTERN(CheckTypeType.CHECK, FIGHT, Permissions.FIGHT_PITCHPATTERN),
     FIGHT_REACH(CheckTypeType.CHECK, FIGHT, Permissions.FIGHT_REACH),
     FIGHT_SELFHIT(CheckTypeType.CHECK, FIGHT, Permissions.FIGHT_SELFHIT),
     FIGHT_SPEED(CheckTypeType.CHECK, FIGHT, Permissions.FIGHT_SPEED),
-    FIGHT_WRONGTURN(CheckTypeType.CHECK, FIGHT, null),
+    FIGHT_WRONGTURN(CheckTypeType.CHECK, FIGHT, Permissions.FIGHT_WRONGTURN),
 
     INVENTORY(CheckTypeType.GROUP, CheckType.ALL, Permissions.INVENTORY),
     INVENTORY_DROP(CheckTypeType.CHECK, INVENTORY, Permissions.INVENTORY_DROP),

@@ -99,6 +99,8 @@ permissions:
         default: false
     nocheatplus.checks.fight.noswing.silent:
         default: false
+    nocheatplus.checks.fight.pitchpattern.silent:
+        default: false
     nocheatplus.checks.fight.reach.silent:
         default: false
     nocheatplus.checks.fight.selfhit.silent:
@@ -245,6 +247,8 @@ permissions:
                         description: Allow the player to bypass the GodMode check.
                     nocheatplus.checks.fight.noswing:
                         description: Allow the player to bypass the NoSwing check.
+                    nocheatplus.checks.fight.pitchpattern:
+                        description: Allow the player to bypass the PitchPattern check.
                     nocheatplus.checks.fight.reach:
                         description: Allow the player to bypass the Reach check.
                     nocheatplus.checks.fight.selfhit:
