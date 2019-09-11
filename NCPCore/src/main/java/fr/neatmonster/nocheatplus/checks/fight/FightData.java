@@ -63,7 +63,9 @@ public class FightData extends ACheckData implements IDataOnRemoveSubCheckData, 
     /** Attack penalty (close combat, ENTITY_ATTACK). */
     public final PenaltyTime attackPenalty = new PenaltyTime();
     public final PenaltyTime clicPatPenalty = new PenaltyTime();
-    public boolean loginExempt;
+    public boolean                 loginExempt;
+    public long                    lastAttackTime;
+
 
     /** The entity id  which might get counter-attacked. */
     public int thornsId = Integer.MIN_VALUE;
