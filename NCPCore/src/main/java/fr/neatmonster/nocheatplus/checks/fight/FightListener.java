@@ -903,7 +903,7 @@ public class FightListener extends CheckListener implements JoinLeaveListener{
     	final Player player = e.getPlayer();
     	final FightData data = DataManager.getGenericInstance(player, FightData.class);
     	
-    	if (entity.getType().getEntityClass().getCanonicalName().endsWith("Parrot")) {
+    	if (entity != null && entity.getType().name().equals("PARROT")) {
 	data.exemptArmSwing = true;
     	} else {
 	data.exemptArmSwing = false;
