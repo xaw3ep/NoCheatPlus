@@ -963,7 +963,9 @@ public class FightListener extends CheckListener implements JoinLeaveListener{
 		final FightData data = DataManager.getGenericInstance(player, FightData.class);
 		float deltaPitch = e.getTo().getPitch() - e.getFrom().getPitch();
 		
-		pitchPattern.check(player, deltaPitch, cc, pData, data);
+		if (pData.isCheckActive(CheckType.FIGHT_PITCHPATTERN, player)) {
+		    pitchPattern.check(player, deltaPitch, cc, pData, data);
+		}
 	}
 
 }
