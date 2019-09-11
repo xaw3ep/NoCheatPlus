@@ -85,6 +85,7 @@ public class FightConfig extends ACheckConfig {
     public final float      speedImprobableWeight;
     public final ActionList speedActions;
     
+    public final boolean    pitchPatternAlwaysActive;
     public final float      pitchPatternLimit;
     public final int        pitchPatternSample;
     public final double     pitchPatternDiff;
@@ -165,6 +166,7 @@ public class FightConfig extends ACheckConfig {
         speedImprobableWeight = (float) config.getDouble(ConfPaths.FIGHT_SPEED_IMPROBABLE_WEIGHT);
         speedActions = config.getOptimizedActionList(ConfPaths.FIGHT_SPEED_ACTIONS, Permissions.FIGHT_SPEED);
         
+        pitchPatternAlwaysActive = config.getBoolean(ConfPaths.FIGHT_PITCHPATTERN_ALWAYSACTIVE);
         pitchPatternLimit = (float) config.getDouble(ConfPaths.FIGHT_PITCHPATTERN_LIMIT);
         pitchPatternSample = config.getInt(ConfPaths.FIGHT_PITCHPATTERN_SAMPLE);
         pitchPatternDiff = config.getDouble(ConfPaths.FIGHT_PITCHPATTERN_DIFF);
