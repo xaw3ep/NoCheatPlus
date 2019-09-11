@@ -521,6 +521,7 @@ public abstract class ConfPaths {
     
     private static final String FIGHT_PITCHPATTERN                       = FIGHT + "pitchpattern.";
     public static final String  FIGHT_PITCHPATTERN_CHECK                 = FIGHT_PITCHPATTERN + SUB_ACTIVE;
+    public static final String  FIGHT_PITCHPATTERN_ALWAYSACTIVE          = FIGHT_PITCHPATTERN + "alwaysactive";
     public static final String  FIGHT_PITCHPATTERN_LIMIT                 = FIGHT_PITCHPATTERN + "limit";
     public static final String  FIGHT_PITCHPATTERN_SAMPLE                = FIGHT_PITCHPATTERN + "sample";
     public static final String  FIGHT_PITCHPATTERN_DIFF                  = FIGHT_PITCHPATTERN + "gcdDiff";
