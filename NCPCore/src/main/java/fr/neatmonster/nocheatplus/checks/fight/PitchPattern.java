@@ -42,6 +42,7 @@ public class PitchPattern extends Check {
 
         // Samples of the pitch changes are at or bigger than the sample
         if(lastDeltaPitches.size() >= cc.pitchPatternSample) {
+	if (!cc.pitchPatternAlwaysActive & !(data.lastAttackTime + 2000 > System.currentTimeMillis())) return;
             float deltaPitchGCD = roundedGCD(lastDeltaPitches);
             float lastDeltaPitchGCD = data.lastDeltaPitchGCDs.getOrDefault(uuid, deltaPitchGCD);
             float gcdDiff = Math.abs(deltaPitchGCD - lastDeltaPitchGCD);
@@ -52,7 +53,7 @@ public class PitchPattern extends Check {
                 data.pitchPatternVL += 1;
             }
             else {
-            data.pitchPatternVL *= 0.98;
+            data.pitchPatternVL *= 0.92;
             data.loginExempt = false;
             }
 
