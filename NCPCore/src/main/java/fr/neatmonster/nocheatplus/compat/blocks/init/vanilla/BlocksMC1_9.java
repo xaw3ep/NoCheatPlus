@@ -78,7 +78,11 @@ public class BlocksMC1_9 implements BlockPropertiesSetup {
         BlockInit.setInstantPassable(BridgeMaterial.BEETROOTS);
 
         // 208(GRASS_PATH / SOLID+GROUND) 
-        BlockInit.setAs("GRASS_PATH", BridgeMaterial.GRASS_BLOCK); // Later it'll be lower!
+        BlockInit.setAs("GRASS_PATH", BridgeMaterial.GRASS_BLOCK);
+             BlockFlags.addFlags("GRASS_PATH",
+                    BlockProperties.F_MIN_HEIGHT16_15 
+                    | BlockProperties.F_HEIGHT100 
+                    | BlockProperties.F_GROUND_HEIGHT);
 
         // 209(END_GATEWAY) 
         // -> Leave flags as is (like air).
