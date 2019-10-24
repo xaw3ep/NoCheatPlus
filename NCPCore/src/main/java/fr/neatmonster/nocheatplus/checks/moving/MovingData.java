@@ -100,6 +100,7 @@ public class MovingData extends ACheckData implements IDataOnRemoveSubCheckData,
     public double         jumpAmplifier = 0;
     /** Last time the player was actually sprinting. */
     public long           timeSprinting = 0;
+    public long           timeGliding = 0;
     public long           bedLeaveTime = 0;
     public long           timeRiptiding = 0;
     public int            RiptideLevel = 0;
