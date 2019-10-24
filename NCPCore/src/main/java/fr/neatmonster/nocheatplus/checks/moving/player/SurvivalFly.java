@@ -279,9 +279,9 @@ public class SurvivalFly extends Check {
         // Renew the "dirty"-flag (in-air phase affected by velocity).
         if (data.isVelocityJumpPhase() || data.resetVelocityJumpPhase(tags)) {
 	    if (data.timeRiptiding + 500 > now) {
-            // ignore
+            // Ignore
             }
-            else if(data.timeGliding + 200 > now) {
+            else if(data.timeGliding + 600 > now) {
             // Ignore	
 	   } 
             else {
@@ -1232,7 +1232,7 @@ public class SurvivalFly extends Check {
 	         strictVdistRel = false;
                  vAllowedDistance = yDistance;			
 	} 
-        else if (data.timeGliding + 200 > now){
+        else if (data.timeGliding + 500 > now){
                  strictVdistRel = false;
                  vAllowedDistance = yDistance;
         }    
@@ -1333,7 +1333,7 @@ public class SurvivalFly extends Check {
                 else if (data.bedLeaveTime + 500 > now && yDistance < 0.45) {
                     vDistRelVL = false;
                 }
-                else if (data.timeGliding + 200 > now) {
+                else if (data.timeGliding + 500 > now) {
                     vDistRelVL = false;
                 }    
                 else {
@@ -1419,7 +1419,7 @@ public class SurvivalFly extends Check {
             else if (data.bedLeaveTime + 500 > now && yDistance < 0.45) {
                 vDistRelVL = false;		
             }
-            else if (data.timeGliding + 200 > now){
+            else if (data.timeGliding + 500 > now){
                 vDistRelVL = false;
             }    
             else {
@@ -1623,7 +1623,7 @@ public class SurvivalFly extends Check {
                // Here yDistance can be negative and positive.
                 // if (yDistance != 0.0) {
 	      if ((BlockProperties.isNewLiq(from.getTypeIdBelow())) || (data.timeRiptiding + 500 > now) || (data.bedLeaveTime + 500 > now && yDistance < 0.45) || (snowFix) || isLanternUpper(to) || 
-                  isWaterlogged(from) || isWaterlogged(to) || (lastMove.from.inLiquid && Math.abs(yDistance) < 0.31 ||(data.timeGliding + 200 > now))) {
+                  isWaterlogged(from) || isWaterlogged(to) || (lastMove.from.inLiquid && Math.abs(yDistance) < 0.31 || (data.timeGliding + 500 > now))) {
 	          // Ignore
 	      }
 	      else {
@@ -1759,7 +1759,7 @@ public class SurvivalFly extends Check {
                 // Moving upwards after falling without having touched the ground.
                 if (data.bunnyhopDelay < 9 && !((lastMove.touchedGround || lastMove.from.onGroundOrResetCond) && lastMove.yDistance == 0D) && data.getOrUseVerticalVelocity(yDistance) == null) {
                    // TODO: adjust limit for bunny-hop.
-                    if ((BlockProperties.isNewLiq(from.getTypeIdBelow())) || (data.timeRiptiding + 500 > now) ||(data.timeGliding + 200 > now) || (data.bedLeaveTime + 500 > now && yDistance < 0.45) || (snowFix) || isLanternUpper(to) || isWaterlogged(from)) {		
+                    if ((BlockProperties.isNewLiq(from.getTypeIdBelow())) || (data.timeRiptiding + 500 > now) || (data.timeGliding + 500 > now) || (data.bedLeaveTime + 500 > now && yDistance < 0.45) || (snowFix) || isLanternUpper(to) || isWaterlogged(from)) {		
 		    } 
                     else {
 		    vDistanceAboveLimit = Math.max(vDistanceAboveLimit, Math.abs(yDistance));
