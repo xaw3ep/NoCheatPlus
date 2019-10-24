@@ -923,7 +923,7 @@ public class MovingListener extends CheckListener implements TickListener, IRemo
 	    // Elytra acceleration
 	    if (lastMove.toIsValid && Bridge1_9.isWearingElytra(player)) { 
                 final long now = System.currentTimeMillis(); 
-                if (data.timeGliding + 100 > now){  // TODO: Custom grace period? Likewise cc.speedGrace
+                if (data.timeGliding + 200 > now){  // TODO: Custom grace period? Likewise cc.speedGrace
                     workaroundElytraAcceleration(player, tick, debug, data); 
                 }
             }
