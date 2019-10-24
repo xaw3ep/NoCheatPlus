@@ -214,6 +214,10 @@ public class CreativeFly extends Check {
         if (Bridge1_9.isGliding(player) && (Bridge1_13.isRiptiding(player) || data.timeRiptiding + 4000 > now) && resultV<60.0) {
         	resultV = 0.0;
         }
+	// Short v. glide
+	if (data.timeGliding + 200 > now) {
+            resultV = 0.0;
+        }    
         if (resultV > 0.0) {
             tags.add("vdist");
         }
@@ -363,6 +367,11 @@ public class CreativeFly extends Check {
         }
 
         if (lastMove.toIsValid) {
+            long now = System.currentTimeMillis();
+            // Short glide
+            if (data.timeGliding + 200 > now){  
+                limitH = hDistance;
+            }
             // TODO: Use last friction (as well)?
             // TODO: Test/adjust more.
             double frictionDist = lastMove.hDistance * Magic.FRICTION_MEDIUM_AIR;
