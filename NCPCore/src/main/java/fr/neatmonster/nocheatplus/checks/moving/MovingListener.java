@@ -280,6 +280,7 @@ public class MovingListener extends CheckListener implements TickListener, IRemo
             info.set(player, player.getLocation(info.useLoc), null, 0.001); // Only restrict very near ground.
             final IPlayerData pData = DataManager.getPlayerData(player);
             final MovingData data = pData.getGenericInstance(MovingData.class);
+	    data.timeGliding = System.currentTimeMillis();
             final boolean res = !MovingUtil.canLiftOffWithElytra(player, info.from, data);
             info.cleanup();
             aux.returnPlayerMoveInfo(info);
@@ -902,7 +903,10 @@ public class MovingListener extends CheckListener implements TickListener, IRemo
         }
 
 	//Force to check survivalfly not creativefly anymore
-        if (Bridge1_13.isRiptiding(player)) {checkSf = true; checkCf = false;}
+        if (Bridge1_13.isRiptiding(player)) {
+	   checkSf = true; 
+	   checkCf = false;
+	}
 	    
         // Flying checks.
         if (checkSf) {
@@ -915,6 +919,13 @@ public class MovingListener extends CheckListener implements TickListener, IRemo
             // Hack: Add velocity for transitions between creativefly and survivalfly.
             if (lastMove.toIsValid && lastMove.flyCheck == CheckType.MOVING_CREATIVEFLY) {
                 workaroundFlyNoFlyTransition(player, tick, debug, data);
+            }
+	    // Elytra acceleration
+	    if (lastMove.toIsValid && Bridge1_9.isWearingElytra(player)) { 
+                final long now = System.currentTimeMillis(); 
+                if (data.timeGliding + 100 > now){  // TODO: Custom grace period? Likewise cc.speedGrace
+                    workaroundElytraAcceleration(player, tick, debug, data); 
+                }
             }
 
             // Actual check.
@@ -1429,6 +1440,27 @@ public class MovingListener extends CheckListener implements TickListener, IRemo
         player.setFallDistance(0f); // TODO: Might do without this in case of elytra, needs ensure NoFall doesn't kill the player (...).
         if (debug) {
             debug(player, "Fly-nofly transition: Add velocity.");
+        }
+    }
+	
+   /**
+     * Add velocity in order to work around issues with the elytra granting
+     * the player a higher speed when trying to take off from ground.
+     * (Glide-noGlide transitions)
+     * 
+     * @param tick
+     * @param data
+     */
+    private void workaroundElytraAcceleration(final Player player, final int tick, 
+            final boolean debug, final MovingData data) {
+        final PlayerMoveData lastMove = data.playerMoves.getFirstPastMove();
+        final double amount = guessFlyNoFlyVelocity(player, data.playerMoves.getCurrentMove(), lastMove, data);
+        data.clearActiveHorVel(); 
+        data.addHorizontalVelocity(new AccountEntry(tick, amount, 1, MovingData.getHorVelValCount(amount)));
+        data.addVerticalVelocity(new SimpleEntry(lastMove.yDistance, 2));
+        data.addVerticalVelocity(new SimpleEntry(0.0, 2));
+        if (debug) {
+            debug(player, "Elytra grace period: Add velocity.");
         }
     }
 
