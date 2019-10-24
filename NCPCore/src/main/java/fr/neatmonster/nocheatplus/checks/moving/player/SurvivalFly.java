@@ -278,14 +278,17 @@ public class SurvivalFly extends Check {
 
         // Renew the "dirty"-flag (in-air phase affected by velocity).
         if (data.isVelocityJumpPhase() || data.resetVelocityJumpPhase(tags)) {
-			if (data.timeRiptiding + 500 > now) {
-				
-			} else {
-            // (Reset is done after checks run.) 
-            tags.add("dirty");
-			}
+	    if (data.timeRiptiding + 500 > now) {
+            // ignore
+            }
+            else if(data.timeGliding + 200 > now) {
+            // Ignore	
+	   } 
+            else {
+              // (Reset is done after checks run.) 
+              tags.add("Dirty");
+	   }
         }
-
         // Check if head is obstructed.
         //if (!resetFrom || !resetTo) {
         thisMove.headObstructed = (yDistance > 0.0 ? from.isHeadObstructed(yDistance) : from.isHeadObstructed()) 
@@ -1220,16 +1223,23 @@ public class SurvivalFly extends Check {
                 }
             }
             strictVdistRel = false;
-        } else if (Bridge1_13.isRiptiding(player) || (data.timeRiptiding + 3000 > now)) {
-            vAllowedDistance = lastMove.yDistance * 5.0D;
-	    strictVdistRel = false;
-	} else if (data.bedLeaveTime + 500 > now && yDistance < 0.45) {
-	    strictVdistRel = false;
-            vAllowedDistance = yDistance;			
-	} else if (snowFix) {
-	    strictVdistRel = false;
-	    vAllowedDistance = 0.425D;
-	}
+        }
+        else if (Bridge1_13.isRiptiding(player) || (data.timeRiptiding + 3000 > now)) {
+                vAllowedDistance = lastMove.yDistance * 5.0D;
+	        strictVdistRel = false;
+	} 
+        else if (data.bedLeaveTime + 500 > now && yDistance < 0.45) {
+	         strictVdistRel = false;
+                 vAllowedDistance = yDistance;			
+	} 
+        else if (data.timeGliding + 200 > now){
+                 strictVdistRel = false;
+                 vAllowedDistance = yDistance;
+        }    
+        else if (snowFix) {
+	         strictVdistRel = false;
+	         vAllowedDistance = 0.425D;
+        }
         else if (lastMove.toIsValid) {
             if (lastMove.yDistance >= -Math.max(Magic.GRAVITY_MAX / 2.0, 1.3 * Math.abs(yDistance)) && lastMove.yDistance <= 0.0 
                     && (lastMove.touchedGround || lastMove.to.extraPropertiesValid && lastMove.to.resetCond)) {
@@ -1315,13 +1325,17 @@ public class SurvivalFly extends Check {
                      * slightly above the top.
                      */
                 }
-				else if (BlockProperties.isNewLiq(from.getTypeIdBelowLiq()) || isLanternUpper(to) || isWaterlogged(from)) {
-					
-				} else if (Bridge1_13.isRiptiding(player) || (data.timeRiptiding + 3000 > now)) {
-					vDistRelVL = false;
-				} else if (data.bedLeaveTime + 500 > now && yDistance < 0.45) {
-					vDistRelVL = false;
-				}
+		else if (BlockProperties.isNewLiq(from.getTypeIdBelowLiq()) || isLanternUpper(to) || isWaterlogged(from) || isWaterlogged(to)) {	
+                }
+		else if (Bridge1_13.isRiptiding(player) || (data.timeRiptiding + 3000 > now)) {
+                    vDistRelVL = false;
+                }
+                else if (data.bedLeaveTime + 500 > now && yDistance < 0.45) {
+                    vDistRelVL = false;
+                }
+                else if (data.timeGliding + 200 > now) {
+                    vDistRelVL = false;
+                }    
                 else {
                     // Violation.
                     vDistRelVL = true;
@@ -1397,14 +1411,17 @@ public class SurvivalFly extends Check {
             else if (lastMove.toIsValid && MagicAir.oddJunction(from, to, yDistance, yDistChange, yDistDiffEx, maxJumpGain, resetTo, thisMove, lastMove, data, cc)) {
                 // Several types of odd in-air moves, mostly with gravity near maximum, friction, medium change.
             }
-			else if (BlockProperties.isNewLiq(from.getTypeIdBelowLiq()) || isLanternUpper(to)) {
-					
-				}
-			else if (Bridge1_13.isRiptiding(player) || (data.timeRiptiding + 3000 > now)) {
-				vDistRelVL = false;
-			} else if (data.bedLeaveTime + 500 > now && yDistance < 0.45) {
-			    vDistRelVL = false;		
-			}
+	    else if (BlockProperties.isNewLiq(from.getTypeIdBelowLiq()) || isLanternUpper(to)) {			
+            }
+            else if (Bridge1_13.isRiptiding(player) || (data.timeRiptiding + 3000 > now)) {
+                vDistRelVL = false;
+            }
+            else if (data.bedLeaveTime + 500 > now && yDistance < 0.45) {
+                vDistRelVL = false;		
+            }
+            else if (data.timeGliding + 200 > now){
+                vDistRelVL = false;
+            }    
             else {
                 // Violation.
                 vDistRelVL = true;
@@ -1603,20 +1620,21 @@ public class SurvivalFly extends Check {
                 data.vDistAcc.add((float) yDistance);
             }
             else if (thisMove.verVelUsed == null) { // Only skip if just used.
-                // Here yDistance can be negative and positive.
-                //                if (yDistance != 0.0) {
-				if ( (BlockProperties.isNewLiq(from.getTypeIdBelow())) || (data.timeRiptiding + 500 > now) || (data.bedLeaveTime + 500 > now && yDistance < 0.45) || (snowFix) || isLanternUpper(to) || isWaterlogged(from)) {
-					// Ignore
-				}
-				else {
+               // Here yDistance can be negative and positive.
+                // if (yDistance != 0.0) {
+	      if ((BlockProperties.isNewLiq(from.getTypeIdBelow())) || (data.timeRiptiding + 500 > now) || (data.bedLeaveTime + 500 > now && yDistance < 0.45) || (snowFix) || isLanternUpper(to) || 
+                  isWaterlogged(from) || isWaterlogged(to) || (lastMove.from.inLiquid && Math.abs(yDistance) < 0.31 ||(data.timeGliding + 200 > now))) {
+	          // Ignore
+	      }
+	      else {
                 data.vDistAcc.add((float) yDistance);
                 final double accAboveLimit = verticalAccounting(yDistance, data.vDistAcc ,tags, "vacc" + (data.isVelocityJumpPhase() ? "dirty" : ""));
                 if (accAboveLimit > vDistanceAboveLimit) {
                     if (data.getOrUseVerticalVelocity(yDistance) == null) {
                         vDistanceAboveLimit = accAboveLimit;
-					}
-                    }
-                }
+		    }
+                 }
+              }
                 //                }
             }
             else {
@@ -1740,13 +1758,13 @@ public class SurvivalFly extends Check {
             else {
                 // Moving upwards after falling without having touched the ground.
                 if (data.bunnyhopDelay < 9 && !((lastMove.touchedGround || lastMove.from.onGroundOrResetCond) && lastMove.yDistance == 0D) && data.getOrUseVerticalVelocity(yDistance) == null) {
-                    // TODO: adjust limit for bunny-hop.
-                if ( (BlockProperties.isNewLiq(from.getTypeIdBelow())) || (data.timeRiptiding + 500 > now) || (data.bedLeaveTime + 500 > now && yDistance < 0.45) || (snowFix) || (isLanternUpper(to))) {
-					
-		} else {
+                   // TODO: adjust limit for bunny-hop.
+                    if ((BlockProperties.isNewLiq(from.getTypeIdBelow())) || (data.timeRiptiding + 500 > now) ||(data.timeGliding + 200 > now) || (data.bedLeaveTime + 500 > now && yDistance < 0.45) || (snowFix) || isLanternUpper(to) || isWaterlogged(from)) {		
+		    } 
+                    else {
 		    vDistanceAboveLimit = Math.max(vDistanceAboveLimit, Math.abs(yDistance));
                     tags.add("ychincfly");
-			}
+		    }
                 }
                 else {
                     tags.add("ychincair");
