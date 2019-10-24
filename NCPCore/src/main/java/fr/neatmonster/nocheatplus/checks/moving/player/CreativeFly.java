@@ -215,7 +215,7 @@ public class CreativeFly extends Check {
         	resultV = 0.0;
         }
 	// Short v. glide
-	if (data.timeGliding + 200 > now) {
+	if (data.timeGliding + 500 > now) {
             resultV = 0.0;
         }    
         if (resultV > 0.0) {
@@ -369,7 +369,7 @@ public class CreativeFly extends Check {
         if (lastMove.toIsValid) {
             long now = System.currentTimeMillis();
             // Short glide
-            if (data.timeGliding + 200 > now){  
+            if (data.timeGliding + 500 > now){  
                 limitH = hDistance;
             }
             // TODO: Use last friction (as well)?
