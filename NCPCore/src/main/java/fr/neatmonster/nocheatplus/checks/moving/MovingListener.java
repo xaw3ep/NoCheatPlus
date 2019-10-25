@@ -920,11 +920,15 @@ public class MovingListener extends CheckListener implements TickListener, IRemo
             if (lastMove.toIsValid && lastMove.flyCheck == CheckType.MOVING_CREATIVEFLY) {
                 workaroundFlyNoFlyTransition(player, tick, debug, data);
             }
-	    // Elytra acceleration
-	    if (lastMove.toIsValid && Bridge1_9.isWearingElytra(player)) { 
-                final long now = System.currentTimeMillis(); 
-                if (data.timeGliding + 200 > now){  // TODO: Custom grace period? Likewise cc.speedGrace
-                    workaroundElytraAcceleration(player, tick, debug, data); 
+	    // Elytra grace-period
+            final long now = System.currentTimeMillis();
+            final long currentGlidingTime = (now - data.timeGliding);
+            // (TODO: more conditions?)
+            // (TODO: move to Survival/CreativeFly?)
+            // TODO: custom grace thresholds! cc.elytraGrace + cc.glidingTimeCount(?)
+	    if (lastMove.toIsValid && Bridge1_9.isWearingElytra(player) && (currentGlidingTime > 70)) { 
+                if (data.timeGliding + 200 > now) {
+                    workaroundElytraAcceleration(player, tick, debug, data);
                 }
             }
 
