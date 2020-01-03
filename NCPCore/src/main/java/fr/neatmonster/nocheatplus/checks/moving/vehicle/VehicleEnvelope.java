@@ -163,12 +163,14 @@ public class VehicleEnvelope extends Check {
         debugDetails.clear();
     }
 
-    private double getHDistCap(final EntityType type, final MovingConfig cc) {
+    private double getHDistCap(final EntityType type, final MovingConfig cc, final VehicleMoveData thisMove) {
         final Double v = cc.vehicleEnvelopeHorizontalSpeedCap.get(type);
         if (v == null) {
+            if (type == EntityType.BOAT && thisMove.from.onIce || thisMove.to.onIce) return 4.1;
             return cc.vehicleEnvelopeHorizontalSpeedCap.get(null);
         }
         else {
+            if (type == EntityType.BOAT && thisMove.from.onIce || thisMove.to.onIce) return v * 2.5;
             return v;
         }
     }
@@ -196,10 +198,10 @@ public class VehicleEnvelope extends Check {
         if (vehicle instanceof LivingEntity) {
         	Double speed = PotionUtil.getPotionEffectAmplifier((LivingEntity)vehicle, PotionEffectType.SPEED);
         	if (!Double.isInfinite(speed)) {
-        		if (maxDistHorizontal(thisMove, getHDistCap(checkDetails.simplifiedType, cc) * (1 + 0.2 * (speed+1)))) return true;
-        	} else if (maxDistHorizontal(thisMove, getHDistCap(checkDetails.simplifiedType, cc))) return true;
+        	    if (maxDistHorizontal(thisMove, getHDistCap(checkDetails.simplifiedType, cc, thisMove) * (1 + 0.2 * (speed+1)))) return true;
+        	} else if (maxDistHorizontal(thisMove, getHDistCap(checkDetails.simplifiedType, cc, thisMove))) return true;
         } else
-        if (maxDistHorizontal(thisMove, getHDistCap(checkDetails.simplifiedType, cc))) { // Override type for now.
+        if (maxDistHorizontal(thisMove, getHDistCap(checkDetails.simplifiedType, cc, thisMove))) { // Override type for now.
             return true;
         }
 
