@@ -166,11 +166,11 @@ public class VehicleEnvelope extends Check {
     private double getHDistCap(final EntityType type, final MovingConfig cc, final VehicleMoveData thisMove) {
         final Double v = cc.vehicleEnvelopeHorizontalSpeedCap.get(type);
         if (v == null) {
-            if (type == EntityType.BOAT && thisMove.from.onIce || thisMove.to.onIce) return 4.1;
+            if (type == EntityType.BOAT && (thisMove.from.onIce || thisMove.to.onIce)) return 4.1;
             return cc.vehicleEnvelopeHorizontalSpeedCap.get(null);
         }
         else {
-            if (type == EntityType.BOAT && thisMove.from.onIce || thisMove.to.onIce) return v * 2.5;
+            if (type == EntityType.BOAT && (thisMove.from.onIce || thisMove.to.onIce)) return v * 2.5;
             return v;
         }
     }
