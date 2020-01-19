@@ -261,8 +261,8 @@ public class MagicAir {
                         && yDistChange > - Magic.GRAVITY_MIN && yDistChange < -Magic.GRAVITY_ODD
                         // 1: Bounce without velocity set. TODO: wat?
                         //|| lastMove.yDistance == 0.0 && yDistance > -GRAVITY_MIN && yDistance < GRAVITY_SPAN
-                        // 1: Bounce with carpet.
-                        || yDistance < 0.006
+                        // 1: Bounce with carpet. TODO: wat?
+                        //|| yDistance < 0.006
                         )
                 // 0: Jump-effect-specific
                 // TODO: Jump effect at reduced lift off envelope -> skip this?
