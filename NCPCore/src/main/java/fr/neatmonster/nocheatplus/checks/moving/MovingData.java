@@ -97,6 +97,7 @@ public class MovingData extends ACheckData implements IDataOnRemoveSubCheckData,
     public int            liqtick = 0;
     public int            watermovect = 0;
     public int            bunnyhopDelay;
+    public int            lastbunnyhopDelay = 0;
     public int            bunnyhopTick = 0;
     public double         jumpAmplifier = 0;
     public long           delayWorkaround = 0;

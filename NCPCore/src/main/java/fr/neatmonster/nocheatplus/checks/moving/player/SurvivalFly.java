@@ -62,6 +62,7 @@ import fr.neatmonster.nocheatplus.players.IPlayerData;
 import fr.neatmonster.nocheatplus.utilities.CheckUtils;
 import fr.neatmonster.nocheatplus.utilities.PotionUtil;
 import fr.neatmonster.nocheatplus.utilities.StringUtil;
+import fr.neatmonster.nocheatplus.utilities.collision.CollisionUtil;
 import fr.neatmonster.nocheatplus.utilities.ds.count.ActionAccumulator;
 import fr.neatmonster.nocheatplus.utilities.location.LocUtil;
 import fr.neatmonster.nocheatplus.utilities.location.PlayerLocation;
@@ -338,6 +339,7 @@ public class SurvivalFly extends Check {
 
         // Alter some data / flags.
         data.bunnyhopDelay--; // TODO: Design to do the changing at the bottom? [if change: check limits in bunnyHop(...)]
+        data.lastbunnyhopDelay -= data.lastbunnyhopDelay > 0 ? 1 : 0;
 
         // Set flag for swimming with the flowing direction of liquid.
         thisMove.downStream = hDistance > (Bridge1_13.isSwimming(player) ? thisMove.walkSpeed * Magic.modSwim[1] : thisMove.walkSpeed * Magic.modSwim[0]) && thisMove.from.inLiquid && from.isDownStream(xDistance, zDistance);
@@ -745,6 +747,7 @@ public class SurvivalFly extends Check {
             if (toOnGround) {
                 // Reset bunny-hop-delay.
                 if (data.bunnyhopDelay > 0 && yDistance > 0.0 && to.getY() > data.getSetBackY() + 0.12 && !from.isResetCond() && !to.isResetCond()) {
+                    if (data.bunnyhopDelay > 7) data.lastbunnyhopDelay = data.bunnyhopDelay;
                     data.bunnyhopDelay = 0;
                     tags.add("resetbunny");
                 }
@@ -2199,13 +2202,40 @@ public class SurvivalFly extends Check {
 
         }
 
+        // bunnyhop-> bunnyslope-> bunnyfriction-> ground-> microjump(still bunnyfriction)-> bunnyfriction
+        //or bunnyhop-> ground-> slidedown-> bunnyfriction
+        // Hit ground but slipped away by somehow and still remain bunny friction
+        final double inc = Bridge1_13.hasIsSwimming() ? 0.03 : 0;
+        if (lastMove.toIsValid && data.bunnyhopDelay <= 0 && data.lastbunnyhopDelay > 0 && lastMove.hDistance > hDistance 
+            && hDistanceBaseRef > 0.0 && hDistance / hDistanceBaseRef < (data.bunnyhopTick > 0 ? (data.bunnyhopTick > 2 ? 1.0 + inc : 1.11 + inc) : 1.22 + inc)) {
+            final double hDistDiff = lastMove.hDistance - hDistance;
+            if (hDistDiff >= lastMove.hDistance / bunnyDivFriction || hDistDiff >= hDistanceAboveLimit / 33.3 || 
+                hDistDiff >= (hDistance - hDistanceBaseRef) * (1.0 - Magic.FRICTION_MEDIUM_AIR)) {
+                //if (data.lastbunnyhopDelay == 8 && thisMove.from.onGround && !thisMove.to.onGround) {
+                //    data.lastbunnyhopDelay++;
+                //    tags.add("bunnyfriction(keep)"); // TODO: Never happen?
+                //} else 
+                if (hDistDiff < 0.01) {
+                    // Allow the move
+                    hDistanceAboveLimit = 0.0;
+                    tags.add("bunnyfriction");
+                    // Remove lowjump in this hop, prevent false in next hop
+                    if (data.sfLowJump) {
+                        data.sfLowJump = false;
+                        tags.add("lowjump_remove");
+                        if (data.lastbunnyhopDelay > 3) data.lastbunnyhopDelay = 3;
+                    }
+                } else data.lastbunnyhopDelay = 0;
+            } else data.lastbunnyhopDelay = 0;
+        }
+
         // Check hop (singular peak up to roughly two times the allowed distance).
         // TODO: Needs better modeling.
         if (allowHop && hDistance >= hDistanceBaseRef
                 && (hDistance > (((!lastMove.toIsValid || lastMove.hDistance == 0.0 && lastMove.yDistance == 0.0) ? 1.11 : 1.314)) * hDistanceBaseRef) 
-                && hDistance < 2.15 * hDistanceBaseRef
+                && hDistance < (data.bunnyhopTick > 0 ? (data.bunnyhopTick > 2 ? 1.76 : 1.96) : 2.15) * hDistanceBaseRef
                 // TODO: Walk speed (static or not) is not a good reference, switch to need normal/base speed instead.
-                || (yDistance > from.getyOnGround() || hDistance < 2.6 * hDistanceBaseRef) && lastMove.toIsValid && hDistance > 1.314 * lastMove.hDistance && hDistance < 2.15 * lastMove.hDistance
+                || (yDistance > from.getyOnGround() || hDistance < (data.bunnyhopTick > 0 ? (data.bunnyhopTick > 2 ? 1.9 : 2.1) : 2.3) * hDistanceBaseRef) && lastMove.toIsValid && hDistance > 1.314 * lastMove.hDistance && hDistance < 2.15 * lastMove.hDistance
                 ) { // if (sprinting) {
             // TODO: Test bunny spike over all sorts of speeds + attributes.
             // TODO: Allow slightly higher speed on lost ground?
