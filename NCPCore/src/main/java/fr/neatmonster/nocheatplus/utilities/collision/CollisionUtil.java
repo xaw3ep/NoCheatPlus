@@ -14,8 +14,12 @@
  */
 package fr.neatmonster.nocheatplus.utilities.collision;
 
+import java.util.List;
+
 import org.bukkit.Location;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
@@ -474,5 +478,12 @@ public class CollisionUtil {
     public static double axisDistance(final double pos, final double minPos, final double maxPos) {
         return pos < minPos ? Math.abs(pos - minPos) : (pos > maxPos ? Math.abs(pos - maxPos) : 0.0);
     }
-
+    public static boolean isCollidingWithEntities(final Player p, final boolean onlylivingenitites) {
+        if (onlylivingenitites) {
+            List<Entity> entities = p.getNearbyEntities(0.15, 0.2, 0.15);
+            entities.removeIf(e -> !(e instanceof LivingEntity));
+            return !entities.isEmpty();
+        }
+        return !p.getNearbyEntities(0.15, 0.15, 0.15).isEmpty();
+    }
 }

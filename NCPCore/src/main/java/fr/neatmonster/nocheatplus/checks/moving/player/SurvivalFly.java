@@ -510,14 +510,14 @@ public class SurvivalFly extends Check {
         }
 
         // Prevent players from sprinting if they're moving backwards (allow buffers to cover up !?).
-        if (sprinting && data.lostSprintCount == 0 
-        && hDistance > thisMove.walkSpeed * 1.002 && !data.isVelocityJumpPhase() && !thisMove.touchedGroundWorkaround
+        if (sprinting && data.lostSprintCount == 0 && hDistance > thisMove.walkSpeed * 1.002 
+        && !data.isVelocityJumpPhase() && !thisMove.touchedGroundWorkaround
         && !player.hasPotionEffect(PotionEffectType.SPEED) && (attrMod == Double.MAX_VALUE || attrMod <= 1.0)
-        && !((from.isInWater() || isWaterlogged(from) || player.getLocation().subtract(0.0, 0.3, 0.0).getBlock().getType() == Material.WATER) && !Double.isInfinite(Bridge1_13.getDolphinGraceAmplifier(player)))) {
+        && !(Bridge1_13.isRiptiding(player) || data.timeRiptiding + 4000 > now) // Quick direction rotate
+        && !(data.liftOffEnvelope.name().startsWith("LIMIT") || BlockProperties.isLiquid(to.getOrCreateBlockCacheNodeBelow().getType()) || isWaterlogged(from) || isWaterlogged(to))) {
             // (Ignore some cases, in order to prevent false positives.)
             if (TrigUtil.isMovingBackwards(xDistance, zDistance, LocUtil.correctYaw(from.getYaw())) 
             && !pData.hasPermission(Permissions.MOVING_SURVIVALFLY_SPRINTING, player)) {
-                //System.out.println("bntick: " + data.bunnyhopTick + "dis:" + hDistance + ">" + thisMove.walkSpeed * 1.002);
                 boolean flag = false;               	
                 if (data.bunnyhopTick > 0) {
                     double newwalkSpeed = 0.0;
@@ -525,7 +525,17 @@ public class SurvivalFly extends Check {
                     if (hDistance > newwalkSpeed) flag = true;
                 } else flag = true;
 
-                if (data.bunnyhopTick == 0 && islowheigh && from.isInLiquid() && !(hDistance > thisMove.walkSpeed * 1.27)) flag = false;
+                // TODO: Better modeling when on ice
+                // TODO: Add Piston+Slime
+                // Quick rotate back in-air
+                if (!thisMove.from.onGround && !thisMove.to.onGround && Math.abs(lastMove.from.getYaw() - thisMove.to.getYaw()) > 10.0) flag = false; 
+                else
+                // On ice
+                if (data.sfOnIce > 5) flag = false; 
+                else
+                // Collide with entities
+                if (Bridge1_9.hasLevitation() && CollisionUtil.isCollidingWithEntities(player, true)) flag = false;
+
                 if (flag) {
                     // (Might have to account for speeding permissions.)
                     // TODO: hDistance is too harsh?
@@ -1078,6 +1088,10 @@ public class SurvivalFly extends Check {
             friction = 0.0; // Ensure friction can't be used to speed.
             useBaseModifiers = true;
             useBaseModifiersSprint = false;
+            if (!Double.isInfinite(mcAccess.getHandle().getFasterMovementAmplifier(player))) {
+                hAllowedDistance *= 0.88;
+                useBaseModifiersSprint = true;
+            }
             // TODO: Attribute modifiers can count in here, e.g. +0.5 (+ 50% doesn't seem to pose a problem, neither speed effect 2).
         }
         // TODO: !sfDirty is very coarse, should use friction instead.
@@ -1085,11 +1099,21 @@ public class SurvivalFly extends Check {
         else if (!sfDirty && thisMove.from.onGround && (data.isusingitem || data.isHackingRI || player.isBlocking()) 
                 && (!checkPermissions || !pData.hasPermission(Permissions.MOVING_SURVIVALFLY_BLOCKING, player))) {
             tags.add("usingitem");
-            data.isHackingRI = false;
-            hAllowedDistance = Magic.modBlock * thisMove.walkSpeed * cc.survivalFlyBlockingSpeed / 100D;
-            friction = 0.0; // Ensure friction can't be used to speed.
-            useBaseModifiers = true;
-            useBaseModifiersSprint = false;
+            if (data.isHackingRI) {
+                data.isHackingRI = false;
+                hAllowedDistance = 0.0;
+                friction = 0.0;
+                useBaseModifiers = false;
+            } else {
+                hAllowedDistance = Magic.modBlock * thisMove.walkSpeed * cc.survivalFlyBlockingSpeed / 100D;
+                friction = 0.0; // Ensure friction can't be used to speed.
+                useBaseModifiers = true;
+                useBaseModifiersSprint = false;
+            }
+        } else if (Bridge1_9.hasLevitation() && CollisionUtil.isCollidingWithEntities(player, true) && hAllowedDistance < 0.35) {
+        	hAllowedDistance = 0.35;
+        	useBaseModifiers = true;
+        	data.bunnyhopTick = 6;
         }
         else {
             useBaseModifiers = true;
@@ -1251,8 +1275,8 @@ public class SurvivalFly extends Check {
                 data.yDis = 0.0;
             }
         }
-        // "Noob" tower, bunny slope, velocity, recently left water 
-        if (tags.contains("lostground_nbtwr") || data.isVelocityJumpPhase() || tags.contains("bunnyslope") || data.liqtick != 0) {
+        // "Noob" tower, jump_edge, velocity, recently left water 
+        if (tags.contains("lostground_nbtwr") || (thisMove.bunnyHop && tags.contains("lostground_edgeasc1")) || data.isVelocityJumpPhase() || data.liqtick != 0) {
             data.yDis = 0.0;
         }
 
