@@ -1074,7 +1074,7 @@ public class SurvivalFly extends Check {
         //     useBaseModifiers = true;
         //}			
 		// Allows faster speed for player when swimming above water since from -> to does not seem to detect correctly
-		else if ((BlockProperties.isLiquid(from.getTypeIdBelow()) || BlockProperties.isNewLiq(from.getTypeIdBelow()) && !Double.isInfinite(Bridge1_13.getDolphinGraceAmplifier(player)))) {
+		else if (BlockProperties.isLiquid(from.getTypeIdBelow()) && !Double.isInfinite(Bridge1_13.getDolphinGraceAmplifier(player))) {
 			hAllowedDistance = Bridge1_13.isSwimming(player) ? Magic.modSwim[1] : Magic.modSwim[0] * thisMove.walkSpeed * cc.survivalFlySwimmingSpeed * Magic.modDolphinsGrace / 100D;
 			final int level = BridgeEnchant.getDepthStriderLevel(player);
 			if (level > 0) {
@@ -1495,7 +1495,7 @@ public class SurvivalFly extends Check {
                      * slightly above the top.
                      */
                 }
-                else if (BlockProperties.isNewLiq(from.getTypeIdBelowLiq()) || isLanternUpper(to) || isWaterlogged(from) || isWaterlogged(to)) {
+                else if (isLanternUpper(to) || isWaterlogged(from) || isWaterlogged(to)) {
 					
                 }
                 else if (Bridge1_13.isRiptiding(player) || (data.timeRiptiding + 3000 > now)) {
@@ -1555,7 +1555,7 @@ public class SurvivalFly extends Check {
                 // Allow too strong decrease.
                 // TODO: Another magic check here? Route most checks through methods anyway?
             }
-			else if (BlockProperties.isNewLiq(from.getTypeIdBelowLiq()) || isLanternUpper(to)) {
+			else if (isLanternUpper(to)) {
 					
 			}
             else {
@@ -1595,7 +1595,7 @@ public class SurvivalFly extends Check {
             else if (lastMove.toIsValid && MagicAir.oddJunction(from, to, yDistance, yDistChange, yDistDiffEx, maxJumpGain, resetTo, thisMove, lastMove, data, cc)) {
                 // Several types of odd in-air moves, mostly with gravity near maximum, friction, medium change.
             }
-            else if (BlockProperties.isNewLiq(from.getTypeIdBelowLiq()) || isLanternUpper(to)) {
+            else if (isLanternUpper(to)) {
 					
             }
             else if (Bridge1_13.isRiptiding(player) || (data.timeRiptiding + 3000 > now)) {
@@ -1805,7 +1805,7 @@ public class SurvivalFly extends Check {
             else if (thisMove.verVelUsed == null) { // Only skip if just used.
                 // Here yDistance can be negative and positive.
                 //                if (yDistance != 0.0) {
-                if ((BlockProperties.isNewLiq(from.getTypeIdBelow())) || (data.timeRiptiding + 500 > now) || (data.bedLeaveTime + 500 > now && yDistance < 0.45) || isLanternUpper(to) || 
+                if ((data.timeRiptiding + 500 > now) || (data.bedLeaveTime + 500 > now && yDistance < 0.45) || isLanternUpper(to) || 
                     isWaterlogged(from) || isWaterlogged(to) || (lastMove.from.inLiquid && Math.abs(yDistance) < 0.31)) {
                     // Ignore
                 }
@@ -1937,7 +1937,7 @@ public class SurvivalFly extends Check {
                 // Moving upwards after falling without having touched the ground.
                 if (data.bunnyhopDelay < 9 && !((lastMove.touchedGround || lastMove.from.onGroundOrResetCond) && lastMove.yDistance == 0D) && data.getOrUseVerticalVelocity(yDistance) == null) {
                     // TODO: adjust limit for bunny-hop.
-                    if ((BlockProperties.isNewLiq(from.getTypeIdBelow())) || (data.timeRiptiding + 500 > now) || (data.bedLeaveTime + 500 > now && yDistance < 0.45) || isLanternUpper(to) || isWaterlogged(from)) {
+                    if ((data.timeRiptiding + 500 > now) || (data.bedLeaveTime + 500 > now && yDistance < 0.45) || isLanternUpper(to) || isWaterlogged(from)) {
 					
 		            } else {
 		                vDistanceAboveLimit = Math.max(vDistanceAboveLimit, Math.abs(yDistance));
@@ -2455,11 +2455,11 @@ public class SurvivalFly extends Check {
         final double maxSpeed = yDistance < 0.0 ? Magic.climbSpeedDescend : Magic.climbSpeedAscend;
         if (Math.abs(yDistance) > maxSpeed) {
             if (from.isOnGround(jumpHeight, 0D, 0D, BlockProperties.F_CLIMBABLE)) {
-                if ((yDistance > data.liftOffEnvelope.getMaxJumpGain(data.jumpAmplifier)+ 0.1) && !((from.getBlockFlags() & BlockProperties.F_CLIMBLIQ) != 0)) {
+                if (yDistance > data.liftOffEnvelope.getMaxJumpGain(data.jumpAmplifier)+ 0.1) {
                     tags.add("climbstep");
                     vDistanceAboveLimit = Math.max(vDistanceAboveLimit, Math.abs(yDistance) - maxSpeed);
 				}
-                } else if (!((from.getBlockFlags() & BlockProperties.F_CLIMBLIQ) != 0) && !isWaterlogged(from)) {
+                } else if (!isWaterlogged(from)) {
                 tags.add("climbspeed");
                 vDistanceAboveLimit = Math.max(vDistanceAboveLimit, Math.abs(yDistance) - maxSpeed);
             }

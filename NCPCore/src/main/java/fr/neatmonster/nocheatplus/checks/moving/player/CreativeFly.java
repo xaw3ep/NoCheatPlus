@@ -432,9 +432,8 @@ public class CreativeFly extends Check {
             // TODO: Better detection of an elytra model (extra flags?).
             limitV = Math.max(limitV, limitV = hackLytra(yDistance, limitV, thisMove, lastMove, data));
         }
-        if (Bridge1_9.isGlidingWithElytra(from.getPlayer()) && from.isInLiquid() || BlockProperties.isNewLiq(from.getTypeId()) 
-                || to.isInLiquid() || BlockProperties.isNewLiq(from.getTypeId())
-                || data.liqtick > 10) // recently left water
+        if (Bridge1_9.isGlidingWithElytra(from.getPlayer()) && 
+        (from.isInLiquid() || to.isInLiquid() || data.liqtick > 10)) // recently left water
             limitV = Math.max(limitV, 0.5);
 
         if (model.getGravity()) {

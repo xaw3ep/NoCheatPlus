@@ -1073,7 +1073,7 @@ public class BlockProperties {
             setFlag(mat, stepFlags);
         }
         for (final Material mat : MaterialUtil.NEWLIQ) {
-            setFlag(mat, F_XZ100 | F_CLIMBABLE | F_CLIMBLIQ);
+            setFlag(mat, F_XZ100 | F_CLIMBLIQ | F_LIQUID | F_WATER);
         }
 
         // Rails

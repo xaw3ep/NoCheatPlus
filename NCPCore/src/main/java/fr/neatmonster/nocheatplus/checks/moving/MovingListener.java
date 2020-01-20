@@ -380,7 +380,7 @@ public class MovingListener extends CheckListener implements TickListener, IRemo
                 }
                 final Material m = other.getLocation().getBlock().getType();
                 final double locY = other.getLocation().getY();
-                if (Math.abs(locY - minY) < 0.7 && (BlockProperties.isLiquid(m) || BlockProperties.isNewLiq(m))){
+                if (Math.abs(locY - minY) < 0.7 && BlockProperties.isLiquid(m)){
                     return true; 
                 }
                 else return false;
