@@ -349,7 +349,7 @@ public class SurvivalFly extends Check {
         //0: Jump
         if ((thisMove.from.onIce && !thisMove.to.onIce && !data.sfLowJump) 
            //0: Jump with head obstructed
-           || (thisMove.headObstructed && thisMove.yDistance > 0.15 && lastMove.from.onIce)
+           || (thisMove.headObstructed && thisMove.yDistance > 0.01 && lastMove.from.onIce)
            ) {
             // TODO: 1. Test if this can simply be removed. 2. Ensure data.sfOnIce resets with a violation.
             data.sfOnIce = 20;
@@ -757,7 +757,7 @@ public class SurvivalFly extends Check {
             if (toOnGround) {
                 // Reset bunny-hop-delay.
                 if (data.bunnyhopDelay > 0 && yDistance > 0.0 && to.getY() > data.getSetBackY() + 0.12 && !from.isResetCond() && !to.isResetCond()) {
-                    if (data.bunnyhopDelay > 7) data.lastbunnyhopDelay = data.bunnyhopDelay;
+                    if (data.bunnyhopDelay > 6) data.lastbunnyhopDelay = data.bunnyhopDelay;
                     data.bunnyhopDelay = 0;
                     tags.add("resetbunny");
                 }
@@ -1792,7 +1792,11 @@ public class SurvivalFly extends Check {
         if (cc.survivalFlyAccountingV) {
             // Currently only for "air" phases.
             // Vertical.
-            if (yDirChange && lastMove.yDistance > 0) { // lastMove.toIsValid is checked above. 
+            if (isCollideWithHB(from, to, data) && thisMove.yDistance < 0.0 && thisMove.yDistance > -0.21) {
+                data.vDistAcc.clear();
+                data.vDistAcc.add((float)-0.2033);
+            }
+            else if (yDirChange && lastMove.yDistance > 0) { // lastMove.toIsValid is checked above. 
                 // Change to descending phase.
                 data.vDistAcc.clear();
                 // Allow adding 0.
@@ -1801,17 +1805,17 @@ public class SurvivalFly extends Check {
             else if (thisMove.verVelUsed == null) { // Only skip if just used.
                 // Here yDistance can be negative and positive.
                 //                if (yDistance != 0.0) {
-				if ((BlockProperties.isNewLiq(from.getTypeIdBelow())) || (data.timeRiptiding + 500 > now) || (data.bedLeaveTime + 500 > now && yDistance < 0.45) || isLanternUpper(to) || 
-                    isWaterlogged(from) || isWaterlogged(to) || (lastMove.from.inLiquid && Math.abs(yDistance) < 0.31) || isCollideWithHB(from, to, data)) {
-					// Ignore
-				}
-				else {
+                if ((BlockProperties.isNewLiq(from.getTypeIdBelow())) || (data.timeRiptiding + 500 > now) || (data.bedLeaveTime + 500 > now && yDistance < 0.45) || isLanternUpper(to) || 
+                    isWaterlogged(from) || isWaterlogged(to) || (lastMove.from.inLiquid && Math.abs(yDistance) < 0.31)) {
+                    // Ignore
+                }
+                else {
                 data.vDistAcc.add((float) yDistance);
                 final double accAboveLimit = verticalAccounting(yDistance, data.vDistAcc ,tags, "vacc" + (data.isVelocityJumpPhase() ? "dirty" : ""));
                 if (accAboveLimit > vDistanceAboveLimit) {
                     if (data.getOrUseVerticalVelocity(yDistance) == null) {
                         vDistanceAboveLimit = accAboveLimit;
-					}
+                    }
                     }
                 }
                 //                }
