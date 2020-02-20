@@ -762,15 +762,14 @@ public class MovingListener extends CheckListener implements TickListener, IRemo
             checkSf = true;
             data.adjustWalkSpeed(player.getWalkSpeed(), tick, cc.speedGrace);
         }
-        else if (pData.isDebugActive(CheckType.MOVING_CREATIVEFLY)) {
+        else if (pData.isCheckActive(CheckType.MOVING_CREATIVEFLY, player)) {
             checkCf = true;
             checkSf = false;
             prepareCreativeFlyCheck(player, from, to, moveInfo, thisMove, multiMoveCount, tick, data, cc);
         }
         else {
-            checkCf = true;
-            checkSf = false;
-            prepareCreativeFlyCheck(player, from, to, moveInfo, thisMove, multiMoveCount, tick, data, cc);
+            checkCf = checkSf = false;
+            // (thisMove.flyCheck stays null.)
         }
 
         // Pre-check checks (hum), either for cf or for sf.
@@ -985,6 +984,10 @@ public class MovingListener extends CheckListener implements TickListener, IRemo
                 thisMove.flyCheck = CheckType.MOVING_CREATIVEFLY;
                 newTo = creativeFly.check(player, pFrom, pTo, 
                         data, cc, pData, time, tick, useBlockChangeTracker);
+                // NoFall.
+                if (checkNf) {
+                    noFall.check(player, pFrom, pTo, previousSetBackY, data, cc, pData);
+                }
             }
             data.sfHoverTicks = -1;
             data.sfLowJump = false;
@@ -1434,13 +1437,11 @@ public class MovingListener extends CheckListener implements TickListener, IRemo
         data.clearActiveHorVel(); // Clear active velocity due to adding actual speed here.
         data.addHorizontalVelocity(new AccountEntry(tick, amount, 1, MovingData.getHorVelValCount(amount)));
         data.addVerticalVelocity(new SimpleEntry(lastMove.yDistance, 2));
+        // 1.15 elytra fly-nofly workaround, need to use velocity above twice
+        data.addVerticalVelocity(new SimpleEntry(lastMove.yDistance, 2));
         data.addVerticalVelocity(new SimpleEntry(0.34, 3));
         data.addVerticalVelocity(new SimpleEntry(0.0, 2));
         data.setFrictionJumpPhase();
-        // Reset fall height.
-        // TODO: Later (e.g. 1.9) check for the ModelFlying, if fall damage is intended.
-        data.clearNoFallData();
-        player.setFallDistance(0f); // TODO: Might do without this in case of elytra, needs ensure NoFall doesn't kill the player (...).
         if (debug) {
             debug(player, "Fly-nofly transition: Add velocity.");
         }
@@ -1451,7 +1452,7 @@ public class MovingListener extends CheckListener implements TickListener, IRemo
         // Default margin: Allow slightly less than the previous speed.
         final double defaultAmount = lastMove.hDistance * (1.0 + Magic.FRICTION_MEDIUM_AIR) / 2.0;
         // Test for exceptions.
-        if (thisMove.hDistance > defaultAmount && Bridge1_9.isGlidingWithElytra(player)) {
+        if (thisMove.hDistance > defaultAmount && Bridge1_9.isWearingElytra(player) && lastMove.modelFlying.getId().equals(MovingConfig.ID_JETPACK_ELYTRA)) {
             // Allowing the same speed won't always work on elytra (still increasing, differing modeling on client side with motXYZ).
             // (Doesn't seem to be overly effective.)
             final PlayerMoveData secondPastMove = data.playerMoves.getSecondPastMove();
@@ -1774,6 +1775,8 @@ public class MovingListener extends CheckListener implements TickListener, IRemo
         //final MovingConfig cc = pData.getGenericInstance(MovingConfig.class);
         data.clearMostMovingCheckData();
         data.setSetBack(player.getLocation(useLoc)); // TODO: Monitor this change (!).
+        data.isusingitem = false;
+
         if (pData.isDebugActive(checkType)) {
             // Log location.
             debug(player, "Death: " + player.getLocation(useLoc));

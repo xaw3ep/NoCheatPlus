@@ -378,7 +378,7 @@ public class BlockInteractListener extends CheckListener {
             if (stack != null && BridgeMisc.maybeElytraBoost(player, stack.getType())) {
                 final int power = BridgeMisc.getFireworksPower(stack);
                 final MovingData mData = pData.getGenericInstance(MovingData.class);
-                final int ticks = Math.max((1 + power) * 20, 30);
+                final int ticks = Math.max((1 + power) * 15, 30);
                 mData.fireworksBoostDuration = ticks;
                 // Expiration tick: not general latency, rather a minimum margin for sudden congestion.
                 mData.fireworksBoostTickExpire = TickTask.getTick() + ticks;

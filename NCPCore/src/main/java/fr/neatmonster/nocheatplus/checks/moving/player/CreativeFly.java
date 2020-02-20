@@ -135,6 +135,15 @@ public class CreativeFly extends Check {
             }
         }
 
+        // Since still check NoFall on CreativeFly, need to exempt who has slow falling effect
+        if (Bridge1_13.hasSlowfalling() && model.getScaleSlowfallingEffect()) {
+            data.clearNoFallData();
+        } else 
+        // Accounting for elytra fall damage
+        if (Bridge1_9.isGlidingWithElytra(player) && thisMove.yDistance > -0.5) {
+            data.clearNoFallData();
+        }
+
         // Horizontal distance check.
         double[] resH = hDist(player, from, to, hDistance, yDistance, sprinting, flying, lastMove, time, model, data, cc);
         double limitH = resH[0];
