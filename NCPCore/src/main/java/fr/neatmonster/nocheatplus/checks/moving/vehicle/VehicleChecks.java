@@ -553,7 +553,7 @@ public class VehicleChecks extends CheckListener {
                 vehicleEnvelope.prepareCheckDetails(vehicle, moveInfo, thisMove);
                 // Check.
                 final SetBackEntry tempNewTo  = vehicleEnvelope.check(player, vehicle, 
-                        thisMove, fake, data, cc, pData);
+                        thisMove, fake, data, cc, pData, moveInfo);
                 if (tempNewTo != null) {
                     newTo = tempNewTo;
                 }
