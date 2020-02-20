@@ -70,13 +70,14 @@ public class Against extends Check {
         else if (BlockProperties.isLiquid(againstType)) {
             // TODO: F_PLACE_AGAINST_WATER|LIQUID...
             if ((placedMat != BridgeMaterial.LILY_PAD
-                    || !BlockProperties.isLiquid(block.getRelative(BlockFace.DOWN).getType()))  
+                    || !BlockProperties.isLiquid(block.getRelative(BlockFace.DOWN).getType()))
+                    && !BlockProperties.isNewLiq(bdata.getLastType())
                     && !pData.hasPermission(Permissions.BLOCKPLACE_AGAINST_LIQUIDS, player)) {
                 violation = true;
             }
         } else
         // Replace block placed by block placed and interact with air or water 
-        if (block.equals(blockAgainst) && (bdata.getLastType() == null || BlockProperties.isLiquid(bdata.getLastType()))
+        if (block.equals(blockAgainst) && (bdata.getLastType() == null || (BlockProperties.isLiquid(bdata.getLastType()) && !BlockProperties.isNewLiq(bdata.getLastType())))
         	&& !pData.hasPermission(Permissions.BLOCKPLACE_AGAINST_SELF, player)) {
         	violation = true;
         }        

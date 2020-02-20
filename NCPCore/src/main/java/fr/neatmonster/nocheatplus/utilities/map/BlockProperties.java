@@ -676,7 +676,6 @@ public class BlockProperties {
     public static final long F_CLIMBABLE                    = f_flag();
     /** Allow climbable can climb up but they didn't use to like vine. */
     public static final long F_CLIMBUPABLE                  = f_flag();
-    public static final long F_CLIMBLIQ                     = f_flag();
     /** The block can change shape. This is most likely not 100% accurate... */
     public static final long F_VARIABLE                     = f_flag();
     //    /** The block has full bounds (0..1), inaccurate! */
@@ -1073,7 +1072,7 @@ public class BlockProperties {
             setFlag(mat, stepFlags);
         }
         for (final Material mat : MaterialUtil.NEWLIQ) {
-            setFlag(mat, F_XZ100 | F_CLIMBLIQ | F_LIQUID | F_WATER);
+            setFlag(mat, F_XZ100 | F_NEWLIQ | F_LIQUID | F_WATER);
         }
 
         // Rails
@@ -2691,7 +2690,7 @@ public class BlockProperties {
      * @return true, if is liquid
      */
     public static final boolean isNewLiq(final Material blockType) {
-        return (getBlockFlags(blockType) & F_CLIMBLIQ) != 0;
+        return (getBlockFlags(blockType) & F_NEWLIQ) != 0;
     }
 
     /**
