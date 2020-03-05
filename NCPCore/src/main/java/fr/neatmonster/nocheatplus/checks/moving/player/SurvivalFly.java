@@ -346,9 +346,15 @@ public class SurvivalFly extends Check {
 
         // Handle ice.
         // TODO: Re-model ice stuff and other (e.g. general thing: ground-modifier + reset conditions).
-        //0: Jump
+        // 0: Jump with head obstructed and trap door on ice
+        if (thisMove.headObstructed && from.isOnIce() && (from.getBlockFlags() & BlockProperties.F_ATTACHED_LOW2_SNEW) != 0) {
+            // Actually no way to detect they are about to jump!
+            data.sfOnIce = 24;
+            data.bunnyhopTick = 4;
+        }
+        // 0: Jump
         if ((thisMove.from.onIce && !thisMove.to.onIce && !data.sfLowJump) 
-           //0: Jump with head obstructed
+           // 0: Jump with head obstructed
            || (thisMove.headObstructed && thisMove.yDistance > 0.01 && lastMove.from.onIce)
            ) {
             // TODO: 1. Test if this can simply be removed. 2. Ensure data.sfOnIce resets with a violation.
@@ -1007,6 +1013,9 @@ public class SurvivalFly extends Check {
         // TODO: sfDirty: Better friction/envelope-based.
         boolean useBaseModifiers = false;
         boolean useBaseModifiersSprint = true;
+        // Reset noslow check if has velocity
+        if (sfDirty) data.noslowhop = 0;
+
         if (thisMove.from.inWeb) {
             data.sfOnIce = 0;
             // TODO: if (from.isOnIce()) <- makes it even slower !
@@ -1094,22 +1103,37 @@ public class SurvivalFly extends Check {
             }
             // TODO: Attribute modifiers can count in here, e.g. +0.5 (+ 50% doesn't seem to pose a problem, neither speed effect 2).
         }
+        else if (data.isHackingRI && !pData.hasPermission(Permissions.MOVING_SURVIVALFLY_BLOCKING, player)) {
+            data.isHackingRI = false;
+            hAllowedDistance = 0.0;
+            friction = 0.0;
+            useBaseModifiers = false;
+            tags.add("usingitem(cancel)");
+        }
         // TODO: !sfDirty is very coarse, should use friction instead.
-        // Find out why it didn't flag immediately
-        else if (!sfDirty && thisMove.from.onGround && (data.isusingitem || data.isHackingRI || player.isBlocking()) 
-                && (!checkPermissions || !pData.hasPermission(Permissions.MOVING_SURVIVALFLY_BLOCKING, player))) {
+        else if (!sfDirty && data.isusingitem && (thisMove.from.onGround || data.noslowhop > 0)
+            && (!checkPermissions || !pData.hasPermission(Permissions.MOVING_SURVIVALFLY_BLOCKING, player)) && data.liftOffEnvelope == LiftOffEnvelope.NORMAL) {
             tags.add("usingitem");
-            if (data.isHackingRI) {
-                data.isHackingRI = false;
-                hAllowedDistance = 0.0;
-                friction = 0.0;
-                useBaseModifiers = false;
-            } else {
-                hAllowedDistance = Magic.modBlock * thisMove.walkSpeed * cc.survivalFlyBlockingSpeed / 100D;
-                friction = 0.0; // Ensure friction can't be used to speed.
-                useBaseModifiers = true;
-                useBaseModifiersSprint = false;
+            if (thisMove.from.onGround) {
+                // Jump
+                if (!thisMove.to.onGround) {
+                    final double speedAmplifier = mcAccess.getHandle().getFasterMovementAmplifier(player);
+                    final double a = Bridge1_13.hasIsSwimming() ? 0.18 : 0.0; 
+                    hAllowedDistance = (lastMove.hDistance > 0.23 ? 0.4 : 0.17 + a) + 0.02 * (Double.isInfinite(speedAmplifier) ? 0 : speedAmplifier + 1.0);
+                    data.noslowhop = 15;
+                // OnGround
+                } else {
+                    hAllowedDistance = Magic.modBlock * thisMove.walkSpeed * cc.survivalFlyBlockingSpeed / 100D;
+                    data.noslowhop = 0;
+                }
+            } else if (data.noslowhop > 0) {
+                if (data.noslowhop == 15 && lastMove.toIsValid) hAllowedDistance = lastMove.hAllowedDistance * 0.6; else
+                hAllowedDistance = lastMove.hAllowedDistance * 0.95;
+                data.noslowhop--;
             }
+            friction = 0.0; // Ensure friction can't be used to speed.
+            useBaseModifiers = true;
+            useBaseModifiersSprint = false;
         } else if (Bridge1_9.hasLevitation() && CollisionUtil.isCollidingWithEntities(player, true) && hAllowedDistance < 0.35) {
         	hAllowedDistance = 0.35;
         	useBaseModifiers = true;
@@ -1436,7 +1460,6 @@ public class SurvivalFly extends Check {
         // TODO: Quick detect valid envelope and move workaround code into a method.
         // TODO: data.noFallAssumeGround  needs more precise flags (refactor to per move data objects, store 123)
         boolean vDistRelVL = false;
-        //System.out.println(data.noFallMaxY);
         // Difference from vAllowedDistance to yDistance.
         final double yDistDiffEx = yDistance - vAllowedDistance;
         //System.out.println("maxlimit: " + yDistDiffEx);
@@ -1597,6 +1620,9 @@ public class SurvivalFly extends Check {
             }
             else if (isLanternUpper(to)) {
 					
+            }
+            else if (isCollideWithHB(from, to, data) && yDistance < -0.125 && yDistance > -0.128) {
+
             }
             else if (Bridge1_13.isRiptiding(player) || (data.timeRiptiding + 3000 > now)) {
                 vDistRelVL = false;
@@ -2015,21 +2041,12 @@ public class SurvivalFly extends Check {
         // TODO: Still not entirely sure about this checking order.
         // TODO: Would quick returns make sense for hDistanceAfterFailure == 0.0?
 
-        // No slow
-        if (thisMove.from.onGround && !isWaterlogged(from) && tags.contains("usingitem") && hDistanceAboveLimit > 0.0 && hDistanceAboveLimit < 0.09) {
-            // Won't check for first move and using item (mostly for food)
-        	if (data.noslownostrict) {
-        		data.noslownostrict = false;
-        	} else
-            //Strict
-            hDistanceAboveLimit = Math.max(hDistanceAboveLimit, 0.1);
-        }
         // Test bunny early, because it applies often and destroys as little as possible.
         hDistanceAboveLimit = bunnyHop(from, to, hAllowedDistance, hDistanceAboveLimit, sprinting, thisMove, lastMove, data, cc);
 
         // After failure permission checks ( + speed modifier + sneaking + blocking + speeding) and velocity (!).
         // Noslow require no permission rechecks
-        if (hDistanceAboveLimit > 0.12 && !tags.contains("usingitem") && !skipPermChecks && !thisMove.from.inLiquid && !thisMove.to.inLiquid && Double.isInfinite(Bridge1_13.getDolphinGraceAmplifier(player)))  {
+        if (hDistanceAboveLimit > 0.12 && !tags.contains("usingitem(cancel)") && !skipPermChecks && !thisMove.from.inLiquid && !thisMove.to.inLiquid && Double.isInfinite(Bridge1_13.getDolphinGraceAmplifier(player)))  {
             // TODO: Most cases these will not apply. Consider redesign to do these last or checking right away and skip here on some conditions.
             hAllowedDistance = setAllowedhDist(player, sprinting, thisMove, data, cc, pData, from, true);
             hDistanceAboveLimit = thisMove.hDistance - hAllowedDistance;

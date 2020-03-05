@@ -26,6 +26,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
@@ -51,14 +52,14 @@ import fr.neatmonster.nocheatplus.players.IPlayerData;
 import fr.neatmonster.nocheatplus.utilities.InventoryUtil;
 
 public class NoSlow extends BaseAdapter {
-	private final static String dftag = "system.nocheatplus.noslow";
-	private final static MiniListener<?>[] miniListeners = new MiniListener<?>[] {
+    private final static String dftag = "system.nocheatplus.noslow";
+    private final static MiniListener<?>[] miniListeners = new MiniListener<?>[] {
         new MiniListener<PlayerItemConsumeEvent>() {
             @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
             @RegisterMethodWithOrder(tag = dftag)
             @Override
             public void onEvent(final PlayerItemConsumeEvent event) {
-            	onItemConsume(event);
+                onItemConsume(event);
             }
         },
         new MiniListener<PlayerInteractEvent>() {
@@ -66,7 +67,7 @@ public class NoSlow extends BaseAdapter {
             @RegisterMethodWithOrder(tag = dftag)
             @Override
             public void onEvent(final PlayerInteractEvent event) {
-            	onItemInteract(event);
+                onItemInteract(event);
             }
         },
         new MiniListener<InventoryOpenEvent>() {
@@ -74,7 +75,7 @@ public class NoSlow extends BaseAdapter {
             @RegisterMethodWithOrder(tag = dftag)
             @Override
             public void onEvent(final InventoryOpenEvent event) {
-            	onInventoryOpen(event);
+                onInventoryOpen(event);
             }
         },
         new MiniListener<PlayerItemHeldEvent>() {
@@ -82,66 +83,74 @@ public class NoSlow extends BaseAdapter {
             @RegisterMethodWithOrder(tag = dftag)
             @Override
             public void onEvent(final PlayerItemHeldEvent event) {
-            	onChangeSlot(event);
+                onChangeSlot(event);
+            }
+        },
+        new MiniListener<BlockPlaceEvent>() {
+            @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+            @RegisterMethodWithOrder(tag = dftag)
+            @Override
+            public void onEvent(final BlockPlaceEvent event) {
+                onPlace(event);
             }
         }
     };
-	
-	private static int timeBetweenRL = 70;
-	private static PacketType[] initPacketTypes() {
+
+    private static int timeBetweenRL = 70;
+    private static PacketType[] initPacketTypes() {
         final List<PacketType> types = new LinkedList<PacketType>(Arrays.asList(
-        		PacketType.Play.Client.BLOCK_DIG
+                PacketType.Play.Client.BLOCK_DIG
                 ));
         return types.toArray(new PacketType[types.size()]);
     }
-	
-	public NoSlow(Plugin plugin) {
-		super(plugin, ListenerPriority.LOW, initPacketTypes());
-		final NoCheatPlusAPI api = NCPAPIProvider.getNoCheatPlusAPI();
-		for (final MiniListener<?> listener : miniListeners) {
-        		api.addComponent(listener, false);
+
+    public NoSlow(Plugin plugin) {
+        super(plugin, ListenerPriority.LOW, initPacketTypes());
+        final NoCheatPlusAPI api = NCPAPIProvider.getNoCheatPlusAPI();
+        for (final MiniListener<?> listener : miniListeners) {
+            api.addComponent(listener, false);
         }
-	}
-	
-	@Override
+    }
+
+    @Override
     public void onPacketReceiving(final PacketEvent event) {
         if (event.isPlayerTemporary()) return;
         handleDiggingPacket(event);
     }
-	
-	private static void onItemConsume(final PlayerItemConsumeEvent e){
-		final Player p = e.getPlayer();
-		
-		final IPlayerData pData = DataManager.getPlayerData(p);
-		final MovingData data = pData.getGenericInstance(MovingData.class);
-		data.isusingitem = false;		
-	}
-    
+
+    private static void onItemConsume(final PlayerItemConsumeEvent e){
+        final Player p = e.getPlayer();
+        
+        final IPlayerData pData = DataManager.getPlayerData(p);
+        final MovingData data = pData.getGenericInstance(MovingData.class);
+        data.isusingitem = false;        
+    }
+
     private static void onInventoryOpen(final InventoryOpenEvent e){
-    	if (e.isCancelled()) return;
-		final Player p = (Player) e.getPlayer();
-		
-		final IPlayerData pData = DataManager.getPlayerData(p);
-		final MovingData data = pData.getGenericInstance(MovingData.class);
-		data.isusingitem = false;		
-	}
-	
+        if (e.isCancelled()) return;
+        final Player p = (Player) e.getPlayer();
+        
+        final IPlayerData pData = DataManager.getPlayerData(p);
+        final MovingData data = pData.getGenericInstance(MovingData.class);
+        data.isusingitem = false;        
+    }
+
     private static void onItemInteract(final PlayerInteractEvent e){
-    	if (e.getAction() != Action.RIGHT_CLICK_AIR && e.getAction() != Action.RIGHT_CLICK_BLOCK) return;
-		final Player p = e.getPlayer();
-		final IPlayerData pData = DataManager.getPlayerData(p);
-		final MovingData data = pData.getGenericInstance(MovingData.class);
-		Block b = e.getClickedBlock();
-		if (p.getGameMode() == GameMode.CREATIVE) {
-			data.isusingitem = false;
-			return;
-			}
-		if (b != null && (
-               b.getType().toString().endsWith("DOOR")
-            || b.getType().toString().endsWith("GATE")
-            || b.getType().toString().endsWith("BUTTON")
-            || b.getType().toString().endsWith("LEVER")
-            || (b.getType().name().startsWith("SWEET_BERRY_BUSH") && ((Ageable) b.getBlockData()).getAge() > 1)
+        if (e.getAction() != Action.RIGHT_CLICK_AIR && e.getAction() != Action.RIGHT_CLICK_BLOCK) return;
+        final Player p = e.getPlayer();
+        final IPlayerData pData = DataManager.getPlayerData(p);
+        final MovingData data = pData.getGenericInstance(MovingData.class);
+        Block b = e.getClickedBlock();
+        if (p.getGameMode() == GameMode.CREATIVE) {
+            data.isusingitem = false;
+            return;
+        }
+        if (b != null && (
+                b.getType().toString().endsWith("DOOR")
+             || b.getType().toString().endsWith("GATE")
+             || b.getType().toString().endsWith("BUTTON")
+             || b.getType().toString().endsWith("LEVER")
+             || (b.getType().name().startsWith("SWEET_BERRY_BUSH") && ((Ageable) b.getBlockData()).getAge() > 1)
         )) {
             data.isusingitem = false;
             return;
@@ -150,38 +159,47 @@ public class NoSlow extends BaseAdapter {
             ItemStack item = e.getItem();
             Material m = item.getType();
             if (InventoryUtil.isConsumable(item)) {
-            // pre1.9 splash potion
-            if (item.getDurability() > 16384) return;
+                // pre1.9 splash potion
+                if (item.getDurability() > 16384) return;
                 if (m == Material.POTION || m == Material.MILK_BUCKET || m.toString().endsWith("_APPLE") || m.name().startsWith("HONEY_BOTTLE")) {
                     data.isusingitem = true;
-                    data.noslownostrict = true;
                     return;
                 }
                 if (item.getType().isEdible() && p.getFoodLevel() < 20) {
                     data.isusingitem = true;
-                    data.noslownostrict = true;
                     return;
                 }
             }
+            if (p.isBlocking()) {
+                data.isusingitem = true;
+                return;
+            }
             if (m.toString().equals("BOW") && hasArrow(p.getInventory())) {
                 data.isusingitem = true;
+                return;
             }
             if (m.toString().equals("CROSSBOW")) {
                 if (item.getItemMeta().serialize().get("charged").equals(false) && hasArrow(p.getInventory())) {
                     data.isusingitem = true;
-                    return;
                 }
             }
         } else data.isusingitem = false;        
     }
-    
+
     private static void onChangeSlot(final PlayerItemHeldEvent e) {
         final Player p = e.getPlayer();
         final IPlayerData pData = DataManager.getPlayerData(p);
         final MovingData data = pData.getGenericInstance(MovingData.class);
         data.isusingitem = false;
     }
-    
+
+    private static void onPlace(final BlockPlaceEvent e) {
+        final Player p = e.getPlayer();
+        final IPlayerData pData = DataManager.getPlayerData(p);
+        final MovingData data = pData.getGenericInstance(MovingData.class);
+        if (InventoryUtil.isConsumable(e.getItemInHand())) data.isusingitem = false;
+    }
+
     private static boolean hasArrow(PlayerInventory i) {
         if (Bridge1_9.hasElytra()) {
         Material m = i.getItemInOffHand().getType();
@@ -189,7 +207,7 @@ public class NoSlow extends BaseAdapter {
         }
         return i.contains(Material.ARROW);
     }
-    
+
     private void handleDiggingPacket(PacketEvent event)
     {
         if(event.getPacketType() != PacketType.Play.Client.BLOCK_DIG) return;
@@ -225,7 +243,7 @@ public class NoSlow extends BaseAdapter {
             data.time_rl_item = now;
         }
     }
-    
+
     /**
      * Set Minimum time between RELEASE_USE_ITEM packet is sent.
      * If time lower this value, A check will flag
