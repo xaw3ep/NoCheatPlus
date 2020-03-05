@@ -380,6 +380,7 @@ public class BlockInteractListener extends CheckListener {
                 final MovingData mData = pData.getGenericInstance(MovingData.class);
                 final int ticks = Math.max((1 + power) * 15, 30);
                 mData.fireworksBoostDuration = ticks;
+                mData.fireworksBoostTickNeedCheck = ticks - 1;
                 // Expiration tick: not general latency, rather a minimum margin for sudden congestion.
                 mData.fireworksBoostTickExpire = TickTask.getTick() + ticks;
                 // TODO: Invalidation mechanics: by tick/time well ?

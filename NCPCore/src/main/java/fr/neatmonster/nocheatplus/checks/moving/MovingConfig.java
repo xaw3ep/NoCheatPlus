@@ -169,6 +169,8 @@ public class MovingConfig extends ACheckConfig {
     public final boolean enforceLocation;
     public final boolean trackBlockMove;
     public final PlayerSetBackMethod playerSetBackMethod;
+    public final boolean resetFwOnground;
+    public final boolean elytraStrict;
 
     // Vehicles
     public final boolean vehicleEnforceLocation;
@@ -218,6 +220,8 @@ public class MovingConfig extends ACheckConfig {
         flyingModelElytra = new ModelFlying(ID_JETPACK_ELYTRA, config, 
                 ConfPaths.MOVING_CREATIVEFLY_MODEL + "elytra.", 
                 new ModelFlying(null, defaultModel).verticalAscendGliding(true).lock());
+        resetFwOnground = config.getBoolean(ConfPaths.MOVING_CREATIVEFLY_EYTRA_FWRESET);
+        elytraStrict = config.getBoolean(ConfPaths.MOVING_CREATIVEFLY_EYTRA_STRICT);
         creativeFlyActions = config.getOptimizedActionList(ConfPaths.MOVING_CREATIVEFLY_ACTIONS, 
                 Permissions.MOVING_CREATIVEFLY);
 

@@ -790,7 +790,19 @@ public class MovingListener extends CheckListener implements TickListener, IRemo
         		NCPAPIProvider.getNoCheatPlusAPI().getLogManager().warning(Streams.STATUS, CheckUtils.getLogMessagePrefix(player, CheckType.MOVING) + " Player move end point seems to be set wrongly.");
         	}
         }
-		
+
+        // Proactive reset of elytraBoost (MC 1.11.2).
+        if (data.fireworksBoostDuration > 0) {
+            if (!lastMove.valid 
+                    || (cc.resetFwOnground && (lastMove.flyCheck != CheckType.MOVING_CREATIVEFLY || lastMove.modelFlying != thisMove.modelFlying))
+                    || data.fireworksBoostTickExpire < tick) {
+                data.fireworksBoostDuration = 0;
+            }
+            else {
+                data.fireworksBoostDuration --;
+            }
+        }
+
         if (pFrom.isInLiquid()) {
             data.liqtick = data.liqtick < 50 ? data.liqtick + 1 : data.liqtick > 0 ? data.liqtick - 1 : 0; 
         } else data.liqtick = data.liqtick > 0 ? data.liqtick - 2 : 0;

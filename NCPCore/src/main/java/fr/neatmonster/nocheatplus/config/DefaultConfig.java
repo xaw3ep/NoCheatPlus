@@ -495,6 +495,8 @@ public class DefaultConfig extends ConfigFile {
             set(ConfPaths.MOVING_CREATIVEFLY_MODEL + "elytra." + ConfPaths.SUB_VERTICAL_ASCEND_SPEED, 0, 785);
             set(ConfPaths.MOVING_CREATIVEFLY_MODEL + "elytra." + ConfPaths.SUB_VERTICAL_MAXHEIGHT, 128, 1104);
             set(ConfPaths.MOVING_CREATIVEFLY_MODEL + "elytra." + ConfPaths.SUB_MODIFIERS, false, 785);
+            set(ConfPaths.MOVING_CREATIVEFLY_EYTRA_FWRESET, false, 1154);
+            set(ConfPaths.MOVING_CREATIVEFLY_EYTRA_STRICT, false, 1154);
         }
         set(ConfPaths.MOVING_CREATIVEFLY_ACTIONS,
                 "cancel log:flyfile:3:5:f"
