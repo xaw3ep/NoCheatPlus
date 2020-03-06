@@ -170,10 +170,6 @@ public class NoSlow extends BaseAdapter {
                     return;
                 }
             }
-            if (p.isBlocking()) {
-                data.isusingitem = true;
-                return;
-            }
             if (m.toString().equals("BOW") && hasArrow(p.getInventory())) {
                 data.isusingitem = true;
                 return;

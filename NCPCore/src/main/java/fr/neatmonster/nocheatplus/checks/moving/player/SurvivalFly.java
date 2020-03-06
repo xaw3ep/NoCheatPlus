@@ -307,7 +307,7 @@ public class SurvivalFly extends Check {
             data.newHDist = false;
         }
     // Moving half on farmland(or end_potal_frame) and half on water
-    if (BlockProperties.collides(from.getBlockCache(), from.getMinX(), from.getMinY(), from.getMinZ(), from.getMaxX(), from.getMaxY(), from.getMaxZ(), BlockProperties.F_HEIGHT16_15) && from.isInWater() || to.isInWater()) {
+    if (BlockProperties.collides(from.getBlockCache(), from.getMinX(), from.getMinY(), from.getMinZ(), from.getMaxX(), from.getMaxY(), from.getMaxZ(), BlockProperties.F_HEIGHT16_15) && (from.isInWater() || to.isInWater())) {
         data.newHDist = true;
     } else {
         data.newHDist = false;
@@ -1111,7 +1111,7 @@ public class SurvivalFly extends Check {
             tags.add("usingitem(cancel)");
         }
         // TODO: !sfDirty is very coarse, should use friction instead.
-        else if (!sfDirty && data.isusingitem && (thisMove.from.onGround || data.noslowhop > 0)
+        else if (!sfDirty && (data.isusingitem || player.isBlocking()) && (thisMove.from.onGround || data.noslowhop > 0 || player.isBlocking())
             && (!checkPermissions || !pData.hasPermission(Permissions.MOVING_SURVIVALFLY_BLOCKING, player)) && data.liftOffEnvelope == LiftOffEnvelope.NORMAL) {
             tags.add("usingitem");
             if (thisMove.from.onGround) {
@@ -1130,6 +1130,8 @@ public class SurvivalFly extends Check {
                 if (data.noslowhop == 15 && lastMove.toIsValid) hAllowedDistance = lastMove.hAllowedDistance * 0.6; else
                 hAllowedDistance = lastMove.hAllowedDistance * 0.95;
                 data.noslowhop--;
+            } else if (player.isBlocking() && lastMove.toIsValid) {
+                hAllowedDistance = lastMove.hDistance * 0.946;
             }
             friction = 0.0; // Ensure friction can't be used to speed.
             useBaseModifiers = true;
