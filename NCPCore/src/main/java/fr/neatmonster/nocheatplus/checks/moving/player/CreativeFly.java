@@ -575,7 +575,7 @@ public class CreativeFly extends Check {
             && Double.isInfinite(Bridge1_13.getSlowfallingAmplifier(player)) && !isCollideWithHB(from, to)
                 ) {
                 tags.add("elytra_v_keep");
-                return new double[] {Math.abs(yDistance), 0.0};
+                return new double[] {yDistance == 0.0 ? 0.1 : Math.abs(yDistance), 0.0};
             }
 
             // Adjust false
@@ -785,11 +785,11 @@ public class CreativeFly extends Check {
         // Default margin: Allow slightly less than the previous speed.
         final double defaultAmount = lastMove.hDistance * (1.0 + Magic.FRICTION_MEDIUM_AIR) / 2.0;
         // Test for exceptions.
-        if (thisMove.hDistance > defaultAmount && Bridge1_9.isWearingElytra(player) && lastMove.modelFlying.getId().equals(MovingConfig.ID_JETPACK_ELYTRA)) {
+        if (thisMove.hDistance > defaultAmount && Bridge1_9.isWearingElytra(player) && lastMove.modelFlying != null && lastMove.modelFlying.getId().equals(MovingConfig.ID_JETPACK_ELYTRA)) {
             // Allowing the same speed won't always work on elytra (still increasing, differing modeling on client side with motXYZ).
             // (Doesn't seem to be overly effective.)
             final PlayerMoveData secondPastMove = data.playerMoves.getSecondPastMove();
-            if (lastMove.modelFlying != null && secondPastMove.modelFlying != null && Magic.glideEnvelopeWithHorizontalGain(thisMove, lastMove, secondPastMove)) {
+            if (secondPastMove.modelFlying != null && Magic.glideEnvelopeWithHorizontalGain(thisMove, lastMove, secondPastMove)) {
                 return thisMove.hDistance + Magic.GLIDE_HORIZONTAL_GAIN_MAX;
             }
         }
