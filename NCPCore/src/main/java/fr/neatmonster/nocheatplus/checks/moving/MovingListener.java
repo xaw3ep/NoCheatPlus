@@ -2599,8 +2599,24 @@ public class MovingListener extends CheckListener implements TickListener, IRemo
             // TODO: Consider to catch all, at least (debug-) logging-wise.
             if (!BlockProperties.isPassable(loc)) {
                 final PlayerMoveData lastMove = data.playerMoves.getFirstPastMove();
-                if (lastMove.toIsValid) {
-                    final Location refLoc = new Location(loc.getWorld(), lastMove.to.getX(), lastMove.to.getY(), lastMove.to.getZ());
+                final PlayerMoveData lastMove2 = data.playerMoves.getNumberOfPastMoves() > 1 ? data.playerMoves.getSecondPastMove() : null;
+                // Won't use lastMove.toIsValid to prevent players already failed some checks in last move
+                if (lastMove.valid) {
+                    Location refLoc = lastMove.toIsValid ? new Location(loc.getWorld(), lastMove.to.getX(), lastMove.to.getY(), lastMove.to.getZ()) : 
+                        new Location(loc.getWorld(), lastMove.from.getX(), lastMove.from.getY(), lastMove.from.getZ());
+                    // More likely lastmove location is same with left location, try to check for second lastmove  
+                    if (TrigUtil.isSamePos(loc, refLoc) && !lastMove.toIsValid && lastMove2 != null) {
+                        refLoc = lastMove2.toIsValid ? new Location(loc.getWorld(), lastMove2.to.getX(), lastMove2.to.getY(), lastMove2.to.getZ()) :
+                        new Location(loc.getWorld(), lastMove2.from.getX(), lastMove2.from.getY(), lastMove2.from.getZ());
+                    }
+                    // Correct position by scan block up
+                    // TODO: what about try to phase upward not downward anymore?
+                    if (!BlockProperties.isPassable(refLoc) || refLoc.distanceSquared(loc) > 1.25) {
+                        double y = Math.ceil(loc.getY());
+                        refLoc = loc.clone();
+                        refLoc.setY(y);
+                        if (!BlockProperties.isPassable(refLoc)) refLoc = loc;
+                    }
                     final double d = refLoc.distanceSquared(loc);
                     if (d > 0.0) {
                         // TODO: Consider to always set back here. Might skip on big distances.

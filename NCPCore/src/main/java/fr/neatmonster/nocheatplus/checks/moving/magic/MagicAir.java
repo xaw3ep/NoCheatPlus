@@ -289,7 +289,7 @@ public class MagicAir {
                         || lastMove.yDistance > 0.4 * Magic.GRAVITY_ODD && lastMove.yDistance < Magic.GRAVITY_MIN && yDistance == 0.0
                         // 1: Too small decrease, right after lift off.
                         || data.sfJumpPhase == 1 && lastMove.yDistance > -Magic.GRAVITY_ODD && lastMove.yDistance <= Magic.GRAVITY_MAX + Magic.GRAVITY_SPAN
-                        && yDistance - lastMove.yDistance < 0.0114
+                        && Math.abs(yDistance - lastMove.yDistance) < 0.0114
                         // 1: Any leaving liquid and keeping distance once.
                         || data.sfJumpPhase == 1 
                         && Math.abs(yDistance) <= Magic.swimBaseSpeedV(Bridge1_13.isSwimming(from.getPlayer())) && yDistance == lastMove.yDistance
