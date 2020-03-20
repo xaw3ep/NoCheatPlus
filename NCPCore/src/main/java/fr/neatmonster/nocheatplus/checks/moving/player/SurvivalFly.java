@@ -469,8 +469,9 @@ public class SurvivalFly extends Check {
             }
             }
 
+        // TODO: Complete re-modeling
         // Prevent players from sprinting if they're moving backwards (allow buffers to cover up !?).
-        if (sprinting && data.lostSprintCount == 0 && hDistance > thisMove.walkSpeed * 1.002 
+        if (sprinting && data.lostSprintCount == 0 && hDistance > thisMove.walkSpeed * 1.2
         && !data.isVelocityJumpPhase() && !thisMove.touchedGroundWorkaround
         && !player.hasPotionEffect(PotionEffectType.SPEED) && (attrMod == Double.MAX_VALUE || attrMod <= 1.0)
         && !(Bridge1_13.isRiptiding(player) || data.timeRiptiding + 4000 > now) // Quick direction rotate
@@ -488,13 +489,11 @@ public class SurvivalFly extends Check {
                 // TODO: Better modeling when on ice
                 // TODO: Add Piston+Slime
                 // Quick rotate back in-air
-                if (!thisMove.from.onGround && !thisMove.to.onGround && Math.abs(lastMove.from.getYaw() - thisMove.to.getYaw()) > 10.0) flag = false; 
-                else
-                // On ice
-                if (data.sfOnIce > 5) flag = false; 
-                else
-                // Collide with entities
-                if (Bridge1_9.hasLevitation() && CollisionUtil.isCollidingWithEntities(player, true)) flag = false;
+                if ((!thisMove.from.onGround && !thisMove.to.onGround && Math.abs(lastMove.from.getYaw() - thisMove.to.getYaw()) > 10.0) 
+                || data.sfOnIce > 5 
+                || (Bridge1_9.hasLevitation() && CollisionUtil.isCollidingWithEntities(player, true))
+                || from.isAboveStairs()
+                ) flag = false;
 
                 if (flag) {
                     // (Might have to account for speeding permissions.)
@@ -1035,6 +1034,14 @@ public class SurvivalFly extends Check {
              useBaseModifiers = true;
              hAllowedDistance = 0.445D;
         }
+        // TODO: Should read hbufmax from config and adjust
+        else if (from.isAboveStairs()) {
+            useBaseModifiers = true;
+            hAllowedDistance = thisMove.yDistance == 0.5 ? 0.37 : 0.265;
+            if (TrigUtil.isMovingBackwards(thisMove.to.getX() - thisMove.from.getX(), thisMove.to.getZ() - thisMove.from.getZ(), LocUtil.correctYaw(from.getYaw())))
+                hAllowedDistance = Magic.DEFAULT_WALKSPEED * cc.survivalFlySprintingSpeed / 100D;
+            if (!Double.isInfinite(mcAccess.getHandle().getFasterMovementAmplifier(player))) hAllowedDistance *= 0.88;
+        }
         //else if (snowFix && hAllowedDistance < 0.377D) {
         //     hAllowedDistance = 0.377D;
         //     useBaseModifiers = true;
@@ -1287,7 +1294,7 @@ public class SurvivalFly extends Check {
             }
         }
         // "Noob" tower, jump_edge, velocity, recently left water 
-        if (tags.contains("lostground_nbtwr") || (thisMove.bunnyHop && tags.contains("lostground_edgeasc1")) || data.isVelocityJumpPhase() || data.liqtick != 0) {
+        if (tags.contains("lostground_nbtwr") || (thisMove.bunnyHop && tags.contains("lostground_edgeasc1")) || data.isVelocityJumpPhase() || data.liqtick != 0 || from.isAboveStairs()) {
             data.yDis = 0.0;
         }
 
@@ -2022,6 +2029,7 @@ public class SurvivalFly extends Check {
         // TODO: Would quick returns make sense for hDistanceAfterFailure == 0.0?
 
         // Test bunny early, because it applies often and destroys as little as possible.
+        if (!(from.isAboveStairs() && to.isAboveStairs() && to.isOnGround()))
         hDistanceAboveLimit = bunnyHop(from, to, hAllowedDistance, hDistanceAboveLimit, sprinting, thisMove, lastMove, data, cc);
 
         // After failure permission checks ( + speed modifier + sneaking + blocking + speeding) and velocity (!).
@@ -2087,7 +2095,7 @@ public class SurvivalFly extends Check {
         }
 
         // After failure bunny (2nd).
-        if (hDistanceAboveLimit > 0) {
+        if (hDistanceAboveLimit > 0 && !(from.isAboveStairs() && to.isAboveStairs() && to.isOnGround())) {
             // (Could distinguish tags from above call).
             hDistanceAboveLimit = bunnyHop(from, to, hAllowedDistance, hDistanceAboveLimit, sprinting, thisMove, lastMove, data, cc);
         }
@@ -2183,7 +2191,7 @@ public class SurvivalFly extends Check {
                     // Allow the move.
                     if (data.isVelocityJumpPhase()) {
                         hDistanceAboveLimit = 0.0;
-                    } else if (hDistDiff * 15 >= hDistanceAboveLimit) hDistanceAboveLimit = 0.0;
+                    } else if (hDistDiff * 15 >= hDistanceAboveLimit && hDistance < hDistanceBaseRef * 1.25) hDistanceAboveLimit = 0.0;
                     if (data.bunnyhopDelay == 1 && !thisMove.to.onGround && !to.isResetCond()) {
                         // ... one move between toonground and liftoff remains for hbuf ...
                         data.bunnyhopDelay ++;
