@@ -202,6 +202,7 @@ public class MagicAir {
         //        yDistance >= -GRAVITY_MAX - GRAVITY_SPAN 
         //        && (yDistChange < -GRAVITY_MIN && Math.abs(yDistChange) <= 2.0 * GRAVITY_MAX + GRAVITY_SPAN
         //        || from.isHeadObstructed(from.getyOnGround()) || data.fromWasReset && from.isHeadObstructed())
+        final int blockdata = from.getData(from.getBlockX(), from.getBlockY(), from.getBlockZ());
         return 
                 // 0: Any envelope (supposedly normal) near 0 yDistance.
                 yDistance > -2.0 * Magic.GRAVITY_MAX - Magic.GRAVITY_MIN && yDistance < 2.0 * Magic.GRAVITY_MAX + Magic.GRAVITY_MIN
@@ -278,14 +279,14 @@ public class MagicAir {
                 || data.liftOffEnvelope != LiftOffEnvelope.NORMAL
                 && (
                         // 1: Wild-card allow half gravity near 0 yDistance. TODO: Check for removal of included cases elsewhere.
-                        lastMove.yDistance > -10.0 * Magic.GRAVITY_ODD / 2.0 && lastMove.yDistance < 10.0 * Magic.GRAVITY_ODD
+                        !(data.liftOffEnvelope.name().startsWith("LIMIT") && (Math.abs(yDistance) > 0.1 || blockdata > 3)) && lastMove.yDistance > -10.0 * Magic.GRAVITY_ODD / 2.0 && lastMove.yDistance < 10.0 * Magic.GRAVITY_ODD
                         && yDistance < lastMove.yDistance - Magic.GRAVITY_MIN / 2.0 && yDistance > lastMove.yDistance - Magic.GRAVITY_MAX
                         // 1: 
-                        || lastMove.yDistance < Magic.GRAVITY_MAX + Magic.GRAVITY_SPAN && lastMove.yDistance > Magic.GRAVITY_ODD
+                        || !data.liftOffEnvelope.name().startsWith("LIMIT") && lastMove.yDistance < Magic.GRAVITY_MAX + Magic.GRAVITY_SPAN && lastMove.yDistance > Magic.GRAVITY_ODD
                         && yDistance > 0.4 * Magic.GRAVITY_ODD && yDistance - lastMove.yDistance < -Magic.GRAVITY_ODD / 2.0
-                        // 1: 
-                        || lastMove.yDistance < 0.2 && lastMove.yDistance >= 0.0 && yDistance > -0.2 && yDistance < 2.0 * Magic.GRAVITY_MAX
-                        // 1: 
+                        // 1: (damaged in liquid) ?
+                        || lastMove.yDistance < 0.2 && lastMove.yDistance >= 0.0 && yDistance > -0.2 && yDistance < 2.0 * Magic.GRAVITY_MIN
+                        // 1: Reset condition?
                         || lastMove.yDistance > 0.4 * Magic.GRAVITY_ODD && lastMove.yDistance < Magic.GRAVITY_MIN && yDistance == 0.0
                         // 1: Too small decrease, right after lift off.
                         || data.sfJumpPhase == 1 && lastMove.yDistance > -Magic.GRAVITY_ODD && lastMove.yDistance <= Magic.GRAVITY_MAX + Magic.GRAVITY_SPAN

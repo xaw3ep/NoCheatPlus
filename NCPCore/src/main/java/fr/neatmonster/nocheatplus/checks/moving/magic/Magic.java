@@ -49,14 +49,14 @@ public class Magic {
     public static final double modSneak             = 0.13D / WALK_SPEED;
     public static final double modSprint            = 0.27 / WALK_SPEED; // TODO: without bunny  0.29 / practical is 0.35
     public static final double modBlock             = 0.1277D / WALK_SPEED;
-    public static final double[] modSwim            = new double[] {0.155D / WALK_SPEED, 0.3D / WALK_SPEED, 0.115D / WALK_SPEED}; // 0.155D / WALK_SPEED(1.13 above); 0.115D / WALK_SPEED(1.12.2 below)
+    public static final double[] modSwim            = new double[] {0.115D / WALK_SPEED, 0.044D / WALK_SPEED, 0.3D / WALK_SPEED}; // 0.044D for horizontal, 0.3 for vertical swimming
     public static final double[] modRiptide         = new double[] {
     		1.0,
     		4.8, //4.6 ?
     		7.2, //7.0 ?
     		10.0
     };
-    public static final double modDolphinsGrace     = 3.6D; // TODO: Adjust value to be more stricter and closer to actual movement speed, and use different value from in water vs above water
+    public static final double modDolphinsGrace     = 4.3D; // TODO: Adjust value to be more stricter and closer to actual movement speed, and use different value from in water vs above water
     public static final double[] modDepthStrider    = new double[] {
             1.0,
             0.1645 / modSwim[0] / WALK_SPEED,
@@ -68,7 +68,6 @@ public class Magic {
     public static final double modIce               = 2.5D; // 
     /** Faster moving down stream (water mainly). */
     public static final double modDownStream        = 0.19 / (WALK_SPEED * modSwim[0]);
-    public static final double modDownStream2       = 0.19 / (WALK_SPEED * modSwim[1]);
 
     /**
      * Somewhat arbitrary horizontal speed gain maximum for advance glide phase.
@@ -133,7 +132,7 @@ public class Magic {
      */
     public static double swimBaseSpeedV(boolean isSwimming) {
         // TODO: Does this have to be the dynamic walk speed (refactoring)?
-        return isSwimming ? WALK_SPEED * modSwim[1] + 0.1 : WALK_SPEED * modSwim[0] + 0.1; // 0.244
+        return isSwimming ? WALK_SPEED * modSwim[2] + 0.1 : WALK_SPEED * modSwim[0] + 0.07; // 0.244
     }
 
     /**

@@ -174,6 +174,7 @@ public class Permissions {
     public static final RegisteredPermission  MOVING_SURVIVALFLY_SNEAKING  = add(MOVING_SURVIVALFLY + ".sneaking");
     public static final RegisteredPermission  MOVING_SURVIVALFLY_SPEEDING  = add(MOVING_SURVIVALFLY + ".speeding");
     public static final RegisteredPermission  MOVING_SURVIVALFLY_SPRINTING = add(MOVING_SURVIVALFLY + ".sprinting");
+    public static final RegisteredPermission  MOVING_SURVIVALFLY_WATERWALK = add(MOVING_SURVIVALFLY + ".waterwalk");
     public static final RegisteredPermission  MOVING_SURVIVALFLY_STEP      = add(MOVING_SURVIVALFLY + ".step");
     public static final RegisteredPermission  MOVING_VEHICLE               = add(MOVING + ".vehicle");
     public static final RegisteredPermission  MOVING_VEHICLE_MOREPACKETS   = add(MOVING_VEHICLE + ".morepackets");
