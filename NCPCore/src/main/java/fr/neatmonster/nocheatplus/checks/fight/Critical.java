@@ -106,7 +106,7 @@ public class Critical extends Check {
                     
                 }
                 auxMoving.returnPlayerMoveInfo(moveInfo);
-            }
+            } else data.criticalVL *= 0.93;
         }
 
         return cancel;
