@@ -28,7 +28,6 @@ import fr.neatmonster.nocheatplus.checks.fight.FightData;
 import fr.neatmonster.nocheatplus.players.DataManager;
 
 public class Fight extends BaseAdapter{
-    private static boolean isEnabled = false;
     private static PacketType[] initPacketTypes() {
         final List<PacketType> types = new LinkedList<PacketType>(Arrays.asList(
                 PacketType.Play.Client.ARM_ANIMATION
@@ -38,7 +37,6 @@ public class Fight extends BaseAdapter{
 
     public Fight(Plugin plugin) {
         super(plugin, ListenerPriority.LOW, initPacketTypes());
-        isEnabled = true;
     }
 
     @Override
@@ -48,10 +46,8 @@ public class Fight extends BaseAdapter{
 
     public void handleAnmationPacket(final PacketEvent event) {
         if (event.isPlayerTemporary()) return;
-        DataManager.getGenericInstance(event.getPlayer(), FightData.class).noSwingArmSwung = true;
-    }
-
-    public static boolean IsEnabled() {
-        return isEnabled;
+        final FightData data = DataManager.getGenericInstance(event.getPlayer(), FightData.class);
+        data.noSwingPacket = true;
+        data.noSwingArmSwung = true;
     }
 }

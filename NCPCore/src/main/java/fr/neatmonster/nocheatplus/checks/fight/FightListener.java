@@ -53,7 +53,6 @@ import fr.neatmonster.nocheatplus.checks.moving.util.MovingUtil;
 import fr.neatmonster.nocheatplus.checks.moving.velocity.VelocityFlags;
 import fr.neatmonster.nocheatplus.checks.net.NetConfig;
 import fr.neatmonster.nocheatplus.checks.net.NetData;
-import fr.neatmonster.nocheatplus.checks.net.protocollib.Fight;
 import fr.neatmonster.nocheatplus.compat.Bridge1_9;
 import fr.neatmonster.nocheatplus.compat.BridgeEnchant;
 import fr.neatmonster.nocheatplus.compat.BridgeHealth;
@@ -855,9 +854,9 @@ public class FightListener extends CheckListener implements JoinLeaveListener{
          * TODO: First one always fails: Packet inversion on 1.12.2? This could
          * be moved to packet level (register either).
          */
-    	if (Fight.IsEnabled()) return;
-        DataManager.getGenericInstance(event.getPlayer(), 
-                FightData.class).noSwingArmSwung = true;
+        final FightData data = DataManager.getGenericInstance(event.getPlayer(), FightData.class);
+        if (data.noSwingPacket) return;
+        data.noSwingArmSwung = true;
         
     }
 
