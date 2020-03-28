@@ -130,8 +130,8 @@ public class LocationTrace {
         @Override
         public boolean isInside(final double x, final double y, final double z) {
             return y >= this.y && y <= this.y + this.boxMarginVertical
-                    && Math.abs(x - this.x) <= this.boxMarginHorizontal
-                    && Math.abs(z - this.z) <= this.boxMarginHorizontal;
+                    && Math.abs(x - this.x) <= this.boxMarginHorizontal * 2.5
+                    && Math.abs(z - this.z) <= this.boxMarginHorizontal * 2.5;
         }
 
     }

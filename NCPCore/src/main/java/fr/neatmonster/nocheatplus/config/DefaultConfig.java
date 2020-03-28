@@ -332,6 +332,7 @@ public class DefaultConfig extends ConfigFile {
         set(ConfPaths.FIGHT_ACTIVE, "default", 1144);
 
         set(ConfPaths.FIGHT_CANCELDEAD, true, 785);
+        set(ConfPaths.FIGHT_MAXLOOPLETENCYTICKS, 8, 1154);
         set(ConfPaths.FIGHT_TOOLCHANGEPENALTY, 0L, 1154); // Disabled for now, it interferes too much with pvp. 500L
         set(ConfPaths.FIGHT_PVP_KNOCKBACKVELOCITY, "default", 785);
 
@@ -356,6 +357,7 @@ public class DefaultConfig extends ConfigFile {
 
         set(ConfPaths.FIGHT_DIRECTION_CHECK, "default", 785);
         set(ConfPaths.FIGHT_DIRECTION_STRICT, true, 1154);
+        set(ConfPaths.FIGHT_DIRECTION_FAILALL, true, 1154);
         set(ConfPaths.FIGHT_DIRECTION_PENALTY, 75L, 1154);
         set(ConfPaths.FIGHT_DIRECTION_ACTIONS, "vl>2 log:fdirectionlowvl:9:10:i vl>5 log:fdirectionlowvl:5:4:i vl>10 cancel log:fdirection:2:4:if vl>50 cancel log:fdirection:0:7:icf cmdc:kicksuspiciouscombat:1:5", 1154);
 
@@ -381,16 +383,17 @@ public class DefaultConfig extends ConfigFile {
         //set(ConfPaths.FIGHT_PITCHPATTERN_ACTIONS, "vl>2 cancel vl>10 cancel log:pitchpattern:5:6:i vl>100 cancel log:pitchpattern:0:10:icf cmdc:kickillegalrotations:3:10", 1154);
 
         set(ConfPaths.FIGHT_REACH_CHECK, "default", 785);
-        set(ConfPaths.FIGHT_REACH_SURVIVALDISTANCE, 4.3, 1154); // 4.4 
+        set(ConfPaths.FIGHT_REACH_SURVIVALDISTANCE, 4.03, 1154); // 4.4 
         set(ConfPaths.FIGHT_REACH_PENALTY, 250, 1154);
         set(ConfPaths.FIGHT_REACH_REDUCE, true, 785);
         set(ConfPaths.FIGHT_REACH_REDUCEDISTANCE, 0.9, 785);
-        set(ConfPaths.FIGHT_REACH_REDUCESTEP, 0.14, 785);
+        set(ConfPaths.FIGHT_REACH_REDUCESTEP, 0.15, 785);
         set(ConfPaths.FIGHT_REACH_IMPROBABLE_FEEDONLY, false, 1154);
         set(ConfPaths.FIGHT_REACH_IMPROBABLE_WEIGHT, 2.0, 1154);
         set(ConfPaths.FIGHT_REACH_ACTIONS, "vl>1 log:freach:8:9:i vl>5 cancel log:freach:2:6:if vl>12 cancel log:kreach:1:5:i vl>35 cancel log:kreach:0:5:if cmdc:kicksuspiciouscombat:2:1", 1154);
 
         set(ConfPaths.FIGHT_SELFHIT_CHECK, "default", 785);
+        set(ConfPaths.FIGHT_SELFHIT_EXCLUDEPROJECTILE, false, 1154);
         set(ConfPaths.FIGHT_SELFHIT_ACTIONS, "cancel log:fselfhit:0:5:icf cmdc:kickselfhit:0:5", 1154);
 
         set(ConfPaths.FIGHT_SPEED_CHECK, "default", 785);

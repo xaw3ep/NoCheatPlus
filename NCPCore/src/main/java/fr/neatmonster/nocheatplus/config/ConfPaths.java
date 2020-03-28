@@ -472,7 +472,8 @@ public abstract class ConfPaths {
 
     public static final String  FIGHT_CANCELDEAD                         = FIGHT + "canceldead";
     public static final String  FIGHT_TOOLCHANGEPENALTY                  = FIGHT + "toolchangepenalty";
-    private static final String FIGHT_PVP                                = FIGHT + "pvp."; 
+    private static final String FIGHT_PVP                                = FIGHT + "pvp.";
+    public static final String  FIGHT_MAXLOOPLETENCYTICKS                = FIGHT + "maxloopletencyticks";
     public static final String  FIGHT_PVP_KNOCKBACKVELOCITY              = FIGHT_PVP + "knockbackvelocity";
 
     private static final String FIGHT_ANGLE                              = FIGHT + "angle.";
@@ -499,6 +500,9 @@ public abstract class ConfPaths {
     private static final String FIGHT_DIRECTION                          = FIGHT + "direction.";
     public static final String  FIGHT_DIRECTION_CHECK                    = FIGHT_DIRECTION + SUB_ACTIVE;
     public static final String  FIGHT_DIRECTION_STRICT                   = FIGHT_DIRECTION + "strict";
+    public static final String  FIGHT_DIRECTION_FAILALL                  = FIGHT_DIRECTION + "failall";
+    public static final String  FIGHT_DIRECTION_LOOPPRECISION            = FIGHT_DIRECTION + "loopprecision";
+    public static final String  FIGHT_DIRECTION_STRICTANGLEPRECISION     = FIGHT_DIRECTION + "strictangleprecision";
     public static final String  FIGHT_DIRECTION_PENALTY                  = FIGHT_DIRECTION + "penalty";
     public static final String  FIGHT_DIRECTION_ACTIONS                  = FIGHT_DIRECTION + "actions";
 
@@ -533,6 +537,7 @@ public abstract class ConfPaths {
 
     public static final String FIGHT_SELFHIT                             = FIGHT + "selfhit.";
     public static final String FIGHT_SELFHIT_CHECK                       = FIGHT_SELFHIT + SUB_ACTIVE;
+    public static final String FIGHT_SELFHIT_EXCLUDEPROJECTILE           = FIGHT_SELFHIT + "excludeprojectile";
     public static final String FIGHT_SELFHIT_ACTIONS                     = FIGHT_SELFHIT + "actions";
 
 

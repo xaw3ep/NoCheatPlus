@@ -53,6 +53,7 @@ import fr.neatmonster.nocheatplus.checks.moving.util.MovingUtil;
 import fr.neatmonster.nocheatplus.checks.moving.velocity.VelocityFlags;
 import fr.neatmonster.nocheatplus.checks.net.NetConfig;
 import fr.neatmonster.nocheatplus.checks.net.NetData;
+import fr.neatmonster.nocheatplus.checks.net.protocollib.Fight;
 import fr.neatmonster.nocheatplus.compat.Bridge1_9;
 import fr.neatmonster.nocheatplus.compat.BridgeEnchant;
 import fr.neatmonster.nocheatplus.compat.BridgeHealth;
@@ -104,7 +105,7 @@ public class FightListener extends CheckListener implements JoinLeaveListener{
 
     /** The no swing check. */
     private final NoSwing     noSwing     = addCheck(new NoSwing());
-    
+
     private final FightSync    FightSync  = addCheck(new FightSync());
 
     /** The reach check. */
@@ -687,7 +688,7 @@ public class FightListener extends CheckListener implements JoinLeaveListener{
                 attacker = (Player) source;
             }
         }
-		if (damagedPlayer != null && !damagedIsDead && (damageCause == DamageCause.BLOCK_EXPLOSION 
+        if (damagedPlayer != null && !damagedIsDead && (damageCause == DamageCause.BLOCK_EXPLOSION 
                 || damageCause == DamageCause.ENTITY_EXPLOSION)) {
             final IPlayerData dpdata = DataManager.getPlayerData(damagedPlayer);
             if (dpdata != null) {
@@ -854,6 +855,7 @@ public class FightListener extends CheckListener implements JoinLeaveListener{
          * TODO: First one always fails: Packet inversion on 1.12.2? This could
          * be moved to packet level (register either).
          */
+    	if (Fight.IsEnabled()) return;
         DataManager.getGenericInstance(event.getPlayer(), 
                 FightData.class).noSwingArmSwung = true;
         
@@ -907,11 +909,11 @@ public class FightListener extends CheckListener implements JoinLeaveListener{
     	Entity entity = e.getRightClicked();
     	final Player player = e.getPlayer();
     	final FightData data = DataManager.getGenericInstance(player, FightData.class);
-    	
-    	if (entity != null && entity.getType().name().equals("PARROT")) {
-	data.exemptArmSwing = true;
-    	} else {
-	data.exemptArmSwing = false;
+
+        if (entity != null && entity.getType().name().equals("PARROT")) {
+            data.exemptArmSwing = true;
+        } else {
+            data.exemptArmSwing = false;
         }
     }
 

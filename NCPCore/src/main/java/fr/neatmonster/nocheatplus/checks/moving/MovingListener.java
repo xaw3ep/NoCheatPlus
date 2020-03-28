@@ -68,6 +68,7 @@ import fr.neatmonster.nocheatplus.checks.combined.BedLeave;
 import fr.neatmonster.nocheatplus.checks.combined.Combined;
 import fr.neatmonster.nocheatplus.checks.combined.CombinedConfig;
 import fr.neatmonster.nocheatplus.checks.combined.CombinedData;
+import fr.neatmonster.nocheatplus.checks.fight.FightConfig;
 import fr.neatmonster.nocheatplus.checks.moving.magic.Magic;
 import fr.neatmonster.nocheatplus.checks.moving.model.ModelFlying;
 import fr.neatmonster.nocheatplus.checks.moving.model.PlayerMoveData;
@@ -2233,12 +2234,11 @@ public class MovingListener extends CheckListener implements TickListener, IRemo
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = false)
     public void onSelfDamage(final EntityDamageByEntityEvent event) {
         final Entity entity = event.getEntity();
-        if (!(entity instanceof Player)) {
-        return;
-        }
+        if (!(entity instanceof Player)) return;
         checkSelfHit((Player) entity, event);
     }
-    
+
+    //TODO: Move to fight listener
     private void checkSelfHit(final Player player, final EntityDamageByEntityEvent event) {
         Entity entity = event.getDamager();
         if(entity instanceof Projectile)
@@ -2250,8 +2250,9 @@ public class MovingListener extends CheckListener implements TickListener, IRemo
                 if (p == player) {
                     final IPlayerData pData = DataManager.getPlayerData(player);
                     final MovingData data = pData.getGenericInstance(MovingData.class);
+                    final FightConfig fconfig = pData.getGenericInstance(FightConfig.class);
                     final long now = System.currentTimeMillis();
-                    if (!pData.hasPermission(Permissions.FIGHT_SELFHIT, player) && data.selfhittime != 0 && data.selfhittime + 1100 > now) {
+                    if (!fconfig.selfHitExcludeprojectile && !pData.hasPermission(Permissions.FIGHT_SELFHIT, player) && data.selfhittime != 0 && data.selfhittime + 1100 > now) {
             		    // TODO: This feature must be configurable
             		    event.setCancelled(true);
             		    player.sendMessage(ChatColor.DARK_RED + "Self-velocity is not allowed!");
