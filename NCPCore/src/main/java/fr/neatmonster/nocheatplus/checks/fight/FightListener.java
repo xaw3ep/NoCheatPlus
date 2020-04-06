@@ -789,8 +789,9 @@ public class FightListener extends CheckListener implements JoinLeaveListener{
         final MovingConfig mcc = pData.getGenericInstance(MovingConfig.class);
         // TODO: How is the direction really calculated?
         // Aim at sqrt(vx * vx + vz * vz, 2), not the exact direction.
-        final double vx = level / Math.sqrt(8.0);
-        final double vz = vx;
+        final double[] vel2Dvec = calculateHorizontalVelocity(attacker, damagedPlayer);
+        final double vx = vel2Dvec[0];
+        final double vz = vel2Dvec[1];
         final double vy = 0.462; // TODO: (0.365) Needs other workarounds, to allow more when moving off ground (vel + GRAVITY_MAX or max jump gain + little?).
         useLoc1.setWorld(null); // Cleanup.
         if (pData.isDebugActive(checkType) || pData.isDebugActive(CheckType.MOVING)) {
@@ -821,6 +822,54 @@ public class FightListener extends CheckListener implements JoinLeaveListener{
         }
         // Cap the level to something reasonable. TODO: Config / cap the velocity anyway.
         return Math.min(20.0, level);
+    }
+
+    /**
+     * Better method to calculate horizontal velocity including direction!
+     * 
+     * @param attacker
+     * @param damagedPlayer
+     * @return velocityX, velocityZ
+     */
+    private double[] calculateHorizontalVelocity(final Player attacker, final Player damagedPlayer) {
+        final Location aloc = attacker.getLocation();
+        final Location dloc = damagedPlayer.getLocation();
+        final double Xdiff = dloc.getX() - aloc.getX();
+        final double Zdiff = dloc.getZ() - aloc.getZ();
+        final double diffdist = Math.sqrt(Xdiff * Xdiff + Zdiff * Zdiff);
+        double vx = 0.0;
+        double vz = 0.0;
+        int incknockbacklevel = 0;
+        // TODO: Get the RELEVANT item (...).
+        final ItemStack stack = Bridge1_9.getItemInMainHand(attacker);
+        if (!BlockProperties.isAir(stack)) {
+            incknockbacklevel = stack.getEnchantmentLevel(Enchantment.KNOCKBACK);
+        }
+        if (attacker.isSprinting()) {
+            // TODO: Lost sprint?
+            incknockbacklevel++;
+        }
+        // Cap the level to something reasonable. TODO: Config / cap the velocity anyway. 
+        incknockbacklevel = Math.min(20, incknockbacklevel);
+
+        if (Math.sqrt(Xdiff * Xdiff + Zdiff * Zdiff) < 1.0E-4D) {
+            if (incknockbacklevel <= 0) incknockbacklevel = -~0;
+            vx = vz = incknockbacklevel / Math.sqrt(8.0);
+            return new double[] {vx, vz};
+        } else {
+            vx = Xdiff / diffdist * 0.4;
+            vz = Zdiff / diffdist * 0.4;
+        }
+
+        if (incknockbacklevel > 0) {
+            vx *= 1.0 + 1.25 * incknockbacklevel;
+            vz *= 1.0 + 1.25 * incknockbacklevel;
+            // Still not exact direction since yaw difference between packet and Location#getYaw();
+            // with incknockbacklevel = 0, it still the precise direction
+            //vx -= Math.sin(aloc.getYaw() * Math.PI / 180.0F) * incknockbacklevel * 0.5F;
+            //vz += Math.cos(aloc.getYaw() * Math.PI / 180.0F) * incknockbacklevel * 0.5F;
+        }
+        return new double[] {vx, vz};
     }
 
     /**

@@ -1001,6 +1001,7 @@ public class SurvivalFly extends Check {
             // TODO: Sneaking and blocking applies to when in water !
             hAllowedDistance = Bridge1_13.isSwimming(player) ? Magic.modSwim[1] : Magic.modSwim[0] * thisMove.walkSpeed * cc.survivalFlySwimmingSpeed / 100D;
             useBaseModifiersSprint = false;
+            if (sfDirty) friction = 0.0;
             if (thisMove.from.inWater || !thisMove.from.inLava) { // (We don't really have other liquids, though.)
                 final int level = BridgeEnchant.getDepthStriderLevel(player);
                 if (level > 0) {
@@ -2079,11 +2080,6 @@ public class SurvivalFly extends Check {
                 hFreedom += data.useHorizontalVelocity(hDistanceAboveLimit - hFreedom);
             }
             if (hFreedom > 0.0) {
-                if (thisMove.from.inLiquid) {
-                    // Most likely velocity received base on ground movement:0.215
-                    // Liquid movement: 0.115 so it a bit lower than expected and need higher velocity
-                    hFreedom += 0.1;
-                }
                 tags.add("hvel");
                 hDistanceAboveLimit = Math.max(0.0, hDistanceAboveLimit - hFreedom);
                 if (hDistanceAboveLimit <= 0.0) {
