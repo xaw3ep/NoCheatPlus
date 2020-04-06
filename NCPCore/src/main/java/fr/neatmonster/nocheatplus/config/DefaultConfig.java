@@ -383,7 +383,7 @@ public class DefaultConfig extends ConfigFile {
         //set(ConfPaths.FIGHT_PITCHPATTERN_ACTIONS, "vl>2 cancel vl>10 cancel log:pitchpattern:5:6:i vl>100 cancel log:pitchpattern:0:10:icf cmdc:kickillegalrotations:3:10", 1154);
 
         set(ConfPaths.FIGHT_REACH_CHECK, "default", 785);
-        set(ConfPaths.FIGHT_REACH_SURVIVALDISTANCE, 4.09, 1154); // 4.4 
+        set(ConfPaths.FIGHT_REACH_SURVIVALDISTANCE, 4.22, 1154); // 4.4 
         set(ConfPaths.FIGHT_REACH_PENALTY, 250, 1154);
         set(ConfPaths.FIGHT_REACH_REDUCE, true, 785);
         set(ConfPaths.FIGHT_REACH_REDUCEDISTANCE, 0.9, 785);
