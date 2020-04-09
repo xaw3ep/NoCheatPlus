@@ -1404,7 +1404,7 @@ public class SurvivalFly extends Check {
             vAllowedDistance = lastMove.yDistance * data.lastFrictionVertical - Magic.GRAVITY_MIN; // Upper bound.
             strictVdistRel = true;
         }
-        else if ((resetFrom || thisMove.touchedGroundWorkaround) && (from.isResetCond() || from.isOnGround(1.0))) {
+        else if ((resetFrom || thisMove.touchedGroundWorkaround) && (from.isResetCond() || from.isOnGround(1.0) || tags.contains("lostground_edgeasc1"))) {
             // TODO: More concise conditions? Some workaround may allow more.
             if (toOnGround) {
                 // Hack for boats (coarse: allows minecarts too).
